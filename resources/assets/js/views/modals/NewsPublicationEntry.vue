@@ -1,0 +1,151 @@
+<template>
+    <b-modal 
+        v-model="showModalEntry"
+        :noCloseOnEsc="true"
+        :noCloseOnBackdrop="true"
+        @shown="focusElement('news_title')"
+    >
+        <div slot="modal-title">
+            News Publication Entry - {{entryMode}}
+        </div>
+        <b-col lg=12>
+            <b-form @keydown="resetFieldStates('newspublication')" autocomplete="off">
+                <b-form-group>
+                    <label class="required" for="news_title">News Title</label>
+                    <b-form-input
+                        ref="news_title"
+                        id="news_title"
+                        v-model="forms.newspublication.fields.news_title"
+                        debounce="250"
+                        type="text"
+                        placeholder="News Title">
+                    </b-form-input>
+                </b-form-group>
+                <b-form-group>
+                    <label class="required">News Description</label>
+                    <b-form-input
+                        ref="news_description"
+                        id="news_description"
+                        v-model="forms.newspublication.fields.news_description"
+                        debounce="250"
+                        type="text"
+                        placeholder="News Description">
+                    </b-form-input>
+                </b-form-group>
+                <b-form-group>
+                    <label class="required">News Publication Date</label>
+                    <date-picker 
+                        ref="news_publish_date"
+                        id="news_publish_date"
+                        v-model="forms.newspublication.fields.news_publish_date"
+                        lang="en" 
+                        input-class="form-control  "
+                        format="MMMM DD, YYYY"
+                        :clearable="false">
+                    </date-picker>
+                </b-form-group>
+                <b-form-group>
+                    <label class="required">Upload Image</label>
+                    <b-row>
+                        <b-col lg=12>
+                            <div class="border" style="height: 150px; width: 100%">
+                                <b-img :src="forms.newspublication.fields.gallery_file_path" style="width:100%" height="150px"/>
+                            </div>
+                            <br>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col lg=6>
+                            <b-form-file @change="fieldChange" ref="file" accept=".jpg, .png, .gif" plain style="display: none;"></b-form-file>
+                            <b-btn variant="success" style="width:100%" @click="$refs.file.$el.click()">
+                                <i class="fa fa-file-image-o"></i> Browse
+                            </b-btn>
+                        </b-col>
+                        <b-col lg=6>
+                            <b-btn variant="danger" style="width:100%" @click="$refs.file.reset(), forms.newspublication.fields.gallery_file_path = null">
+                                <i class="fa fa-times"></i> Remove
+                            </b-btn>
+                        </b-col>
+                    </b-row>
+                </b-form-group>
+            </b-form>
+        </b-col>
+        <div slot="modal-footer">
+            <b-button :disabled="forms.newspublication.isSaving" variant="success" @click="onNewsPublicationEntry">
+                <icon v-if="forms.newspublication.isSaving" name="sync" spin></icon>
+                <i class="fa fa-check"></i>
+                Save
+            </b-button>
+            <b-button variant="danger" @click="showModalEntry=false">Close</b-button>            
+        </div>
+    </b-modal>
+</template>
+<script>
+export default {
+    name: 'newspublicationentry',
+    props: ['type'],
+    data() {
+        return {
+            entryMode: 'Add',
+            showModalEntry: false, //if true show modal
+            forms: {
+                newspublication : {
+                    isSaving: false,
+                    fields: {
+                        news_id: null,
+                        news_title: null,
+                        news_description: null,
+                        news_publish_date: null,
+                        gallery_file_path: null
+                    }
+                }
+            },
+            image: new FormData,
+            row: []
+        }
+    },
+    methods:{
+        onNewsPublicationEntry () {
+            if(this.type == 'reference'){
+                if(this.entryMode == 'Add'){
+                    this.$parent.createEntityRef('newspublication', true, 'newspublications', 'newspublicationentry')
+                }
+                else{
+                    this.$parent.updateEntityRef('newspublication', 'news_id', true, this.row, 'newspublicationentry')
+                }
+            }
+            else{
+                this.$parent.createOptionsEntityRef('newspublication', 'showModalEntry', 'newspublications', this.type, 'news_id', 'newspublicationentry')
+            }
+        },
+        setUpdate(data){
+            this.row = data.item
+            this.fillEntityForm('newspublication', data.item.news_id, 'showModalEntry')
+            this.entryMode='Edit'
+        },
+        fieldChange(e){
+
+            let attachment = e.target.files[0]
+            let path = 'uploads/gallery'
+
+            this.image.append('file', attachment)
+            this.image.append('path', path)
+
+
+            this.$http.post('/api/gallery/upload', this.image, {
+                headers: {
+                      Authorization: 'Bearer ' + localStorage.getItem('token'),
+                      'Content-Type' : 'multipart/form-data'
+                  }
+            })
+            .then((response) => {
+                forms.newspublication.fields.gallery_file_path = response.data.path
+            })
+            .catch(error => {
+              if (!error.response) return
+              console.log(error)
+            })
+        }
+    },
+}
+</script>
