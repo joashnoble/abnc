@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ContentManagement\CSR;
 use App\Models\Transactions\ContractInfo;
+use App\Models\ContentManagement\Gallery;
 use App\Http\Resources\Reference;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -20,7 +21,10 @@ class CSRController extends Controller
      */
     public function index()
     {
-        $csr = CSR::where('is_deleted', 0)->orderBy('csr_id', 'desc')->get();
+        $csr = CSR::
+                    leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_csr.gallery_id')
+                    ->where('cms_csr.is_deleted', 0)->orderBy('cms_csr.csr_id', 'desc')->get();
+
         return Reference::collection($csr);
     }
 
@@ -39,16 +43,31 @@ class CSRController extends Controller
             ]
         )->validate();
 
+        $gallery = new Gallery();
         $csr = new CSR();
+
         $csr->csr_title = $request->input('csr_title');
         $csr->csr_text = $request->input('csr_text');
         $csr->created_datetime = Carbon::now();
         $csr->created_by = Auth::user()->id;
     
-        $csr->save();
+        if($csr->save()){
+            $gallery->gallery_type_id = 3; //CSR
+            $gallery->ref_id = $csr->csr_id;
+            $gallery->gallery_description = $request->input('csr_text');
+            $gallery->gallery_file_path = $request->input('gallery_file_path');
+            $gallery->save();
+
+            $csr = CSR::findOrFail($csr->csr_id);
+            $csr->gallery_id = $gallery->gallery_id;
+            $csr->save();
+        }
+        
+        $data = CSR::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_csr.gallery_id')
+                ->findOrFail($csr->csr_id);
 
         //return json based from the resource data
-        return ( new Reference( $csr ))
+        return ( new Reference( $data ))
                 ->response()
                 ->setStatusCode(201);
     }
@@ -72,8 +91,8 @@ class CSRController extends Controller
      */
     public function show($id)
     {
-        $csr = CSR::findOrFail($id);
-
+        $csr = CSR::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_csr.gallery_id')
+                ->findOrFail($id);       
         return ( new Reference( $csr ) )
             ->response()
             ->setStatusCode(200);
@@ -114,13 +133,30 @@ class CSRController extends Controller
         $csr->modified_datetime = Carbon::now();
         $csr->modified_by = Auth::user()->id;
 
+        if($csr->update()){
+            
+            Gallery::where('gallery_type_id',3)->where('ref_id', $id)->delete();
 
-        //update  based on the http json body that is sent
-        $csr->update();
+            $gallery = new Gallery;
+            $gallery->gallery_type_id = 3; //News and Publication
+            $gallery->ref_id = $id;
+            $gallery->gallery_description = $request->input('csr_text');
+            $gallery->gallery_file_path = $request->input('gallery_file_path');
+            $gallery->save();
 
-        return ( new Reference( $csr ) )
-            ->response()
-            ->setStatusCode(200);
+            $csr = CSR::findOrFail($id);
+            $csr->gallery_id = $gallery->gallery_id;
+            $csr->save();
+
+        }        
+            
+        $data = CSR::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_csr.gallery_id')
+        ->findOrFail($id);
+
+        //return json based from the resource data
+        return ( new Reference( $data ))
+                ->response()
+                ->setStatusCode(200);
     }
 
     

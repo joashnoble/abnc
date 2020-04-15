@@ -14,7 +14,7 @@
                         </h5>
                         <b-row class="mb-2">
                             <b-col sm="4">
-                                    <b-button v-if="checkRights('10-38')" variant="success" @click="$refs.userentry.showModalEntry = true, $refs.userentry.entryMode='Add', $refs.userentry.clearFields('user')">
+                                    <b-button v-if="checkRights('8-30')" variant="success" @click="$refs.userentry.showModalEntry = true, $refs.userentry.entryMode='Add', $refs.userentry.clearFields('user')">
                                             <i class="fa fa-file-o"></i> &nbsp; Create New User
                                     </b-button>
                             </b-col>
@@ -49,11 +49,11 @@
                                     striped hover small show-empty
                                 >
                                     <template v-slot:cell(action)="data" >
-                                        <b-btn v-if="checkRights('10-39')" :size="'sm'" variant="primary" @click="$refs.userentry.setUpdate(data)">
+                                        <b-btn v-if="checkRights('8-31')" :size="'sm'" variant="primary" @click="$refs.userentry.setUpdate(data)">
                                             <i class="fa fa-edit"></i>
                                         </b-btn>
 
-                                        <b-btn v-if="checkRights('10-40')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.id)">
+                                        <b-btn v-if="checkRights('8-32')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.id)">
                                             <i class="fa fa-trash"></i>
                                         </b-btn>
                                     </template>
@@ -160,7 +160,7 @@ export default {
     computed: {
         checkAction(){
             if(this.$store.state.rights.length > 0){
-                if((this.checkRights('10-39') || this.checkRights('10-40')) == false){
+                if((this.checkRights('8-31') || this.checkRights('8-32')) == false){
                     this.tables.users.fields.pop()
                 }
             }

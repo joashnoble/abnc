@@ -32,6 +32,9 @@ Route::group([
 // }); 
 Route::middleware('auth:api')->group(function () {
    //---------------------------------- REFERENCES -----------------------------------------------
+
+   Route::post('formSubmit','Utilities\ImageUploaderController@formSubmit');
+
    //DASHBOARD
    Route::get('dashboard/index/{payment_type}', 'References\DashboardController@index');
    Route::get('dashboard/payment/{payment_type}/{is_string}', 'References\DashboardController@getPaymentLine');
@@ -103,6 +106,7 @@ Route::middleware('auth:api')->group(function () {
    Route::post('servicetype', 'References\ServiceTypeController@create');
    Route::put('servicetype/{id}', 'References\ServiceTypeController@update');
    Route::put('servicetype/delete/{id}', 'References\ServiceTypeController@delete');
+   Route::get('servicetypecheck/{id}', 'References\ServiceTypeController@checkIfUsed');
 
     // List News Publication
     Route::get('newspublications', 'ContentManagement\NewsPublicationsController@index');
@@ -440,8 +444,11 @@ Route::middleware('auth:api')->group(function () {
             $uploadedFile = $request->file;
             $uploadedPath = $request->path;
 
-            $uploadedFile->move($uploadedPath, $request->id);
-            $path = $uploadedPath.'/logo';
+            $imageName = time().'.'.$request->file->getClientOriginalExtension();
+
+            $uploadedFile->move($uploadedPath, $imageName);
+            $path = $uploadedPath.'/'.$imageName;
+
             return response(['status'=>'success', 'path'=>$path], 200);
         }
     });

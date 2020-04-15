@@ -111,7 +111,39 @@
                             </b-form-input>
                         </b-col>
                     </b-row>
-                </b-form-group>                  
+                </b-form-group>   
+                <b-form-group>
+                    <label class="required">Upload Cover Image</label>
+                    <b-row>
+                        <b-col lg=12>
+                            <div class="border" style="height: 200px; width: 100%">
+                                <b-img :src="forms.seminar.fields.gallery_file_path" v-model="forms.seminar.fields.gallery_file_path" 
+                        ref="gallery_file_path"
+                        id="gallery_file_path" style="width:100%" height="200px"/>
+                            </div>
+                            <br>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col lg=6>
+                            <b-form-file @change="fieldChange" ref="file" accept=".jpg, .png, .gif" plain style="display: none;"></b-form-file>
+                            <b-btn variant="success" style="width:100%" @click="$refs.file.$el.click()">
+                                <i class="fa fa-file-image-o"></i> Browse
+                            </b-btn>
+                        </b-col>
+                        <b-col lg=6>
+                            <b-btn variant="danger" style="width:100%" @click="$refs.file.reset(), forms.seminar.fields.gallery_file_path = 'uploads/gallery/default.jpg'">
+                                <i class="fa fa-times"></i> Remove
+                            </b-btn>
+                        </b-col>
+                    </b-row>
+                    <br>
+                    <b-row>
+                        <b-col lg=12>
+                            <vue-dropzone ref="myVueDropzone" id="dropzone" v-model="forms.seminar.fields.gallery_file_paths" :options="dropzoneOptions"></vue-dropzone>
+                        </b-col>
+                    </b-row>
+                </b-form-group>                               
             </b-form>
         </b-col>
         <div slot="modal-footer">
@@ -125,8 +157,15 @@
     </b-modal>
 </template>
 <script>
+
+import vue2Dropzone from 'vue2-dropzone'
+import 'vue2-dropzone/dist/vue2Dropzone.min.css'
+
 export default {
     name: 'seminarentry',
+    components: {
+        vueDropzone: vue2Dropzone
+    },      
     props: ['type'],
     data() {
         return {
@@ -144,11 +183,25 @@ export default {
                         seminar_date: null,
                         seminar_time_from: null,
                         seminar_time_to: null,
-                        seminar_venue: null
+                        seminar_venue: null,
+                        gallery_file_path: null,
+                        gallery_file_paths: null,
+                        id: null
                     }
                 }
             },
-            row: []
+            image: new FormData,
+            row: [],
+            url: null,
+            dropzoneOptions: {
+                url: '/api/formSubmit',
+                thumbnailWidth: 150,
+                maxFilesize: 0.5,
+                addRemoveLinks: true,
+                headers: {
+                      Authorization: 'Bearer ' + localStorage.getItem('token')
+                  }                
+            },   
         }
     },
     methods:{
@@ -169,6 +222,29 @@ export default {
             this.row = data.item
             this.fillEntityForm('seminar', data.item.seminar_id, 'showModalEntry')
             this.entryMode='Edit'
+        },
+        fieldChange(e){
+
+            let attachment = e.target.files[0]
+            let path = 'uploads/gallery'
+
+            this.image.append('file', attachment)
+            this.image.append('path', path)
+            this.image.append('id', this.forms.seminar.fields.id)
+
+            this.$http.post('/api/gallery/upload', this.image, {
+                headers: {
+                      Authorization: 'Bearer ' + localStorage.getItem('token'),
+                      'Content-Type' : 'multipart/form-data'
+                  }
+            })
+            .then((response) => {
+                this.forms.seminar.fields.gallery_file_path = response.data.path
+            })
+            .catch(error => {
+              if (!error.response) return
+              console.log(error)
+            })
         }
     },
 }

@@ -47,7 +47,10 @@
                                     :per-page="paginations.newspublications.perPage"
                                     @filtered="onFiltered($event,'newspublications')"
                                     striped hover small show-empty
-                                >
+                                >               
+                                    <template v-slot:cell(gallery_file_path)="{ value }">
+                                            <img :src="value" alt="image">
+                                    </template>                                
                                     <template v-slot:cell(action)="data">
                                         <b-btn v-if="checkRights('4-15')" :size="'sm'" variant="primary" @click="$refs.newspublicationentry.setUpdate(data)">
                                             <i class="fa fa-edit"></i>
@@ -93,6 +96,12 @@ export default {
             tables: {
                 newspublications: {
                     fields:[
+                        {
+                            key:'gallery_file_path',
+                            label: 'Cover Image',
+                            thStyle: {width: '150px'},
+                            tdClass: 'align-middle'
+                        },                        
                         {
                             key:'news_title',
                             label: 'Title',
@@ -152,3 +161,9 @@ export default {
   }
 </script>
 
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  img {
+    height: 5rem;
+  }
+</style>

@@ -45,11 +45,13 @@
                     </date-picker>
                 </b-form-group>
                 <b-form-group>
-                    <label class="required">Upload Image</label>
+                    <label class="required">Upload Cover Image</label>
                     <b-row>
                         <b-col lg=12>
-                            <div class="border" style="height: 150px; width: 100%">
-                                <b-img :src="forms.newspublication.fields.gallery_file_path" style="width:100%" height="150px"/>
+                            <div class="border" style="height: 200px; width: 100%">
+                                <b-img :src="forms.newspublication.fields.gallery_file_path" v-model="forms.newspublication.fields.gallery_file_path" 
+                        ref="gallery_file_path"
+                        id="gallery_file_path" style="width:100%" height="200px"/>
                             </div>
                             <br>
                         </b-col>
@@ -62,9 +64,15 @@
                             </b-btn>
                         </b-col>
                         <b-col lg=6>
-                            <b-btn variant="danger" style="width:100%" @click="$refs.file.reset(), forms.newspublication.fields.gallery_file_path = null">
+                            <b-btn variant="danger" style="width:100%" @click="$refs.file.reset(), forms.newspublication.fields.gallery_file_path = 'uploads/gallery/default.jpg'">
                                 <i class="fa fa-times"></i> Remove
                             </b-btn>
+                        </b-col>
+                    </b-row>
+                    <br>
+                    <b-row>
+                        <b-col lg=12>
+                            <vue-dropzone ref="myVueDropzone" id="dropzone" v-model="forms.newspublication.fields.gallery_file_paths" :options="dropzoneOptions"></vue-dropzone>
                         </b-col>
                     </b-row>
                 </b-form-group>
@@ -81,8 +89,14 @@
     </b-modal>
 </template>
 <script>
+import vue2Dropzone from 'vue2-dropzone'
+import 'vue2-dropzone/dist/vue2Dropzone.min.css'
+
 export default {
     name: 'newspublicationentry',
+    components: {
+        vueDropzone: vue2Dropzone
+    },    
     props: ['type'],
     data() {
         return {
@@ -96,12 +110,24 @@ export default {
                         news_title: null,
                         news_description: null,
                         news_publish_date: null,
-                        gallery_file_path: null
+                        gallery_file_path: null,
+                        gallery_file_paths: null,
+                        id: null
                     }
                 }
             },
             image: new FormData,
-            row: []
+            row: [],
+            url: null,
+            dropzoneOptions: {
+                url: '/api/formSubmit',
+                thumbnailWidth: 150,
+                maxFilesize: 0.5,
+                addRemoveLinks: true,
+                headers: {
+                      Authorization: 'Bearer ' + localStorage.getItem('token')
+                  }                
+            },            
         }
     },
     methods:{
@@ -130,7 +156,7 @@ export default {
 
             this.image.append('file', attachment)
             this.image.append('path', path)
-
+            this.image.append('id', this.forms.newspublication.fields.id)
 
             this.$http.post('/api/gallery/upload', this.image, {
                 headers: {
@@ -139,7 +165,7 @@ export default {
                   }
             })
             .then((response) => {
-                forms.newspublication.fields.gallery_file_path = response.data.path
+                this.forms.newspublication.fields.gallery_file_path = response.data.path
             })
             .catch(error => {
               if (!error.response) return

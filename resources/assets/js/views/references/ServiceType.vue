@@ -14,7 +14,7 @@
                         </h5>
                         <b-row class="mb-2">
                             <b-col sm="4">
-                                    <b-button v-if="checkRights('4-14')" variant="success" @click="$refs.servicetypeentry.showModalEntry = true, $refs.servicetypeentry.entryMode='Add', $refs.servicetypeentry.clearFields('servicetype')">
+                                    <b-button v-if="checkRights('2-6')" variant="success" @click="$refs.servicetypeentry.showModalEntry = true, $refs.servicetypeentry.entryMode='Add', $refs.servicetypeentry.clearFields('servicetype')">
                                             <i class="fa fa-file-o"></i> &nbsp; Create New Type
                                     </b-button>
                             </b-col>
@@ -49,11 +49,11 @@
                                     striped hover small show-empty
                                 >
                                     <template v-slot:cell(action)="data">
-                                        <b-btn v-if="checkRights('4-15')" :size="'sm'" variant="primary" @click="$refs.servicetypeentry.setUpdate(data)">
+                                        <b-btn v-if="checkRights('2-7')" :size="'sm'" variant="primary" @click="$refs.servicetypeentry.setUpdate(data)">
                                             <i class="fa fa-edit"></i>
                                         </b-btn>
 
-                                        <b-btn v-if="checkRights('4-16')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.service_type_id)">
+                                        <b-btn v-if="checkRights('2-8')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.service_type_id)">
                                             <i class="fa fa-trash"></i>
                                         </b-btn>
                                     </template>
@@ -134,7 +134,7 @@ export default {
     computed: {
         checkAction(){
             if(this.$store.state.rights.length > 0){
-                if((this.checkRights('4-15') || this.checkRights('4-16')) == false){
+                if((this.checkRights('2-7') || this.checkRights('2-8')) == false){
                     this.tables.servicestype.fields.pop()
                 }
             }

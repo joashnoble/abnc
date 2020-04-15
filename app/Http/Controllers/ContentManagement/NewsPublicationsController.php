@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ContentManagement;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ContentManagement\NewsPublication;
+use App\Models\ContentManagement\Gallery;
 use App\Models\Transactions\ContractInfo;
 use App\Http\Resources\Reference;
 use Carbon\Carbon;
@@ -39,21 +40,36 @@ class NewsPublicationsController extends Controller
             [
                 'news_title' => 'required',
                 'news_description' => 'required',
-                'news_publish_date' => 'required'                
+                'news_publish_date' => 'required'              
             ]
         )->validate();
 
+        $gallery = new Gallery();
         $newspublication = new NewsPublication();
+
         $newspublication->news_title = $request->input('news_title');
         $newspublication->news_description = $request->input('news_description');
         $newspublication->news_publish_date = date("Y-m-d",strtotime($request->input('news_publish_date')));
         $newspublication->created_datetime = Carbon::now();
         $newspublication->created_by = Auth::user()->id;
-    
-        $newspublication->save();
+
+        if($newspublication->save()){
+            $gallery->gallery_type_id = 1; //News and Publication
+            $gallery->ref_id = $newspublication->news_id;
+            $gallery->gallery_description = $request->input('news_description');
+            $gallery->gallery_file_path = $request->input('gallery_file_path');
+            $gallery->save();
+
+            $newspublication = NewsPublication::findOrFail($newspublication->news_id);
+            $newspublication->gallery_id = $gallery->gallery_id;
+            $newspublication->save();
+        }
+        
+        $data = NewsPublication::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
+                ->findOrFail($newspublication->news_id);
 
         //return json based from the resource data
-        return ( new Reference( $newspublication ))
+        return ( new Reference( $data ))
                 ->response()
                 ->setStatusCode(201);
     }
@@ -77,7 +93,8 @@ class NewsPublicationsController extends Controller
      */
     public function show($id)
     {
-        $newspublication = NewsPublication::findOrFail($id);
+        $newspublication = NewsPublication::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
+                ->findOrFail($id);        
 
         return ( new Reference( $newspublication ) )
             ->response()
@@ -104,7 +121,8 @@ class NewsPublicationsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $newspublication = NewsPublication::findOrFail($id);
+        $newspublication = NewsPublication::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
+                ->findOrFail($id);
 
         Validator::make($request->all(),
             [
@@ -121,13 +139,31 @@ class NewsPublicationsController extends Controller
         $newspublication->modified_datetime = Carbon::now();
         $newspublication->modified_by = Auth::user()->id;
 
+        if($newspublication->update()){
+            
+            Gallery::where('gallery_type_id',1)->where('ref_id', $id)->delete();
 
-        //update  based on the http json body that is sent
-        $newspublication->update();
+            $gallery = new Gallery;
+            $gallery->gallery_type_id = 1; //News and Publication
+            $gallery->ref_id = $id;
+            $gallery->gallery_description = $request->input('news_description');
+            $gallery->gallery_file_path = $request->input('gallery_file_path');
+            $gallery->save();
 
-        return ( new Reference( $newspublication ) )
-            ->response()
-            ->setStatusCode(200);
+            $newspublication = NewsPublication::findOrFail($id);
+            $newspublication->gallery_id = $gallery->gallery_id;
+            $newspublication->save();
+
+        }        
+            
+        $data = NewsPublication::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
+        ->findOrFail($id);
+
+        //return json based from the resource data
+        return ( new Reference( $data ))
+                ->response()
+                ->setStatusCode(200);
+
     }
 
     

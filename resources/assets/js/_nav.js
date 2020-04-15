@@ -9,24 +9,24 @@ export default {
       name: 'References',
       url: '/references',
       icon: 'icon-book-open',
-      rights: [2,3,4,5,6,7,8,9],
+      rights: [1,2,3],
       children:[
         {
           name: 'Service Categories',
           url: '/references/categories',
-          rights: '4-13',
+          rights: '1-1',
           icon: 'icon-folder'
         },
         {
           name: 'Service Type',
           url: '/references/ServiceType',
-          rights: '4-13',
+          rights: '2-5',
           icon: 'icon-folder'
         },
         {
           name: 'Services',
           url: '/references/services',
-          rights: '4-13',
+          rights: '3-9',
           icon: 'icon-folder'
         }                
       ]
@@ -35,18 +35,18 @@ export default {
       name: 'Content Management',
       url: '/cms',
       icon: 'icon-wrench',
-      rights: [2,3,4,5,6,7,8,9],
+      rights: [4,5,6,7],
       children:[
         {
           name: 'News and Publication',
           url: '/cms/newspublication',
-          rights: '2-5',
+          rights: '4-13',
           icon: 'icon-list'
         },
         {
           name: 'Seminars',
           url: '/cms/seminars',
-          rights: '2-5',
+          rights: '5-17',
           icon: 'icon-list'
         },    
         // {
@@ -58,13 +58,13 @@ export default {
         {
           name: 'CSR',
           url: '/cms/csr',
-          rights: '2-5',
+          rights: '6-21',
           icon: 'icon-list'
         }, 
         {
           name: 'Careers',
           url: '/cms/careers',
-          rights: '2-5',
+          rights: '7-25',
           icon: 'icon-list'
         },                                
       ]
@@ -175,24 +175,24 @@ export default {
       name: 'Settings',
       url: '/accounts',
       icon: 'icon-settings',
-      rights: [10,11,12],
+      rights: [8,9,10],
       children:[
         {
           name: 'Users',
           url: '/accounts/users',
-          rights: '10-37',
+          rights: '8-29',
           icon: 'icon-user'
         },
         {
           name: 'User Group',
           url: '/accounts/user_groups',
-          rights: '11-41',
+          rights: '9-33',
           icon: 'icon-people'
         },
         {
           name: 'Company Settings',
           url: '/accounts/company_settings',
-          rights: '12-45',
+          rights: '10-37',
           icon: 'icon-settings'
         }
       ]

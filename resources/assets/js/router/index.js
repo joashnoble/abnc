@@ -120,19 +120,19 @@ const router = new Router({
               path: 'categories',
               name: 'Categories',
               component: categories,
-              meta: {requiresAuth: true, rights: '4-13'}
+              meta: {requiresAuth: true, rights: '1-1'}
             },
             {
               path: 'servicetype',
               name: 'Service Type',
               component: servicetype,
-              meta: {requiresAuth: true, rights: '4-13'}
+              meta: {requiresAuth: true, rights: '2-5'}
             },   
             {
               path: 'services',
               name: 'Services',
               component: services,
-              meta: {requiresAuth: true, rights: '4-13'}
+              meta: {requiresAuth: true, rights: '3-9'}
             },                        
             // {
             //   path: 'charges',
@@ -184,13 +184,13 @@ const router = new Router({
               path: 'newspublication',
               name: 'News Publication',
               component: newspublication,
-              meta: {requiresAuth: true, rights: '10-37'}
+              meta: {requiresAuth: true, rights: '4-13'}
             },
             {
               path: 'seminars',
               name: 'Seminars',
               component: seminars,
-              meta: {requiresAuth: true, rights: '10-37'}
+              meta: {requiresAuth: true, rights: '5-17'}
             },
             {
               path: 'gallery',
@@ -202,13 +202,13 @@ const router = new Router({
               path: 'csr',
               name: 'CSR',
               component: csr,
-              meta: {requiresAuth: true, rights: '10-37'}
+              meta: {requiresAuth: true, rights: '6-21'}
             },     
             {
               path: 'careers',
               name: 'Careers',
               component: careers,
-              meta: {requiresAuth: true, rights: '10-37'}
+              meta: {requiresAuth: true, rights: '7-25'}
             }                                    
           ]
         },
@@ -223,7 +223,7 @@ const router = new Router({
               path: 'users',
               name: 'Users',
               component: users,
-              meta: {requiresAuth: true, rights: '10-37'}
+              meta: {requiresAuth: true, rights: '8-29'}
             },
             {
               path: 'profile',
@@ -235,13 +235,13 @@ const router = new Router({
               path: 'user_groups',
               name: 'User Groups',
               component: usergroups,
-              meta: {requiresAuth: true, rights: '11-41'}
+              meta: {requiresAuth: true, rights: '9-33'}
             },
             {
               path: 'company_settings',
               name: 'Company Settings',
               component: companysettings,
-              meta: {requiresAuth: true, rights: '12-45'}
+              meta: {requiresAuth: true, rights: '10-37'}
             }
           ]
         },

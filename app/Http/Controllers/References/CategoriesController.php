@@ -5,6 +5,7 @@ namespace App\Http\Controllers\References;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\References\Category;
+use App\Models\References\Service;
 use App\Models\Transactions\ContractInfo;
 use App\Http\Resources\Reference;
 use Carbon\Carbon;
@@ -163,7 +164,7 @@ class CategoriesController extends Controller
     {
         $exists = 'false';
 
-        if(ContractInfo::where('category_id', '=', $id)
+        if(Service::where('category_id', '=', $id)
             ->where('is_deleted', 0)
             ->exists()) {
             $exists = 'true';

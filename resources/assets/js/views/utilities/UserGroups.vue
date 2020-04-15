@@ -2,7 +2,7 @@
     <!--<b-animated fade-in>  main container -->
     <div>
         <notifications group="notification" />
-        <div class="animated fadeIn">
+        <div class="animated fadeIn"> 
             <b-row>
                 <b-col sm="12">
                     <b-card class="card-accent-dark">
@@ -14,7 +14,7 @@
                         </h5>
                         <b-row class="mb-2">
                             <b-col sm="4">
-                                    <b-button v-if="checkRights('11-42')" variant="success" @click="$refs.usergroupentry.showModalEntry = true, $refs.usergroupentry.entryMode='Add', $refs.usergroupentry.clearFields('usergroup')">
+                                    <b-button v-if="checkRights('9-34')" variant="success" @click="$refs.usergroupentry.showModalEntry = true, $refs.usergroupentry.entryMode='Add', $refs.usergroupentry.clearFields('usergroup')">
                                             <i class="fa fa-file-o"></i> &nbsp; Create New User Group
                                     </b-button>
                             </b-col>
@@ -54,11 +54,11 @@
                                         <!-- </b-btn> -->
                                     </template>
                                     <template v-slot:cell(action)="data" >
-                                        <b-btn v-if="checkRights('11-43')" :size="'sm'" variant="primary" @click="$refs.usergroupentry.setUpdate(data)">
+                                        <b-btn v-if="checkRights('9-35')" :size="'sm'" variant="primary" @click="$refs.usergroupentry.setUpdate(data)">
                                             <i class="fa fa-edit"></i>
                                         </b-btn>
 
-                                        <b-btn v-if="checkRights('11-44')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.user_group_id)">
+                                        <b-btn v-if="checkRights('9-36')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.user_group_id)">
                                             <i class="fa fa-trash"></i>
                                         </b-btn>
                                     </template>
@@ -86,7 +86,7 @@
                                                                                 /> -->
                                                                                 <b-form-radio-group 
                                                                                     buttons
-                                                                                    :button-variant="right.rights == 1 ?'outline-primary' : 'outline-danger'"
+                                                                                    :button-variant="right.rights == 1 ?'outline-success' : 'outline-danger'"
                                                                                     v-model="right.rights"
                                                                                     :options="[
                                                                                         { text: 'On', value: '1' },
@@ -265,7 +265,7 @@ export default {
     computed: {
         checkAction(){
             if(this.$store.state.rights.length > 0){
-                if((this.checkRights('11-43') || this.checkRights('11-44')) == false){
+                if((this.checkRights('9-35') || this.checkRights('9-36')) == false){
                     this.tables.usergroups.fields.pop()
                 }
             }

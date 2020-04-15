@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ContentManagement\Seminar;
 use App\Models\Transactions\ContractInfo;
+use App\Models\ContentManagement\Gallery;
 use App\Http\Resources\Reference;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -20,7 +21,8 @@ class SeminarsController extends Controller
      */
     public function index()
     {
-        $seminar = Seminar::where('is_deleted', 0)->orderBy('seminar_id', 'desc')->get();
+        $seminar = Seminar::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
+            ->where('is_deleted', 0)->orderBy('seminar_id', 'desc')->get();
         return Reference::collection($seminar);
     }
 
@@ -44,7 +46,9 @@ class SeminarsController extends Controller
             ]
         )->validate();
 
+        $gallery = new Gallery();
         $seminar = new Seminar();
+
         $seminar->seminar_title = $request->input('seminar_title');
         $seminar->seminar_description = $request->input('seminar_description');
         $seminar->speaker_fullname = $request->input('speaker_fullname');
@@ -56,12 +60,26 @@ class SeminarsController extends Controller
         $seminar->created_datetime = Carbon::now();
         $seminar->created_by = Auth::user()->id;
     
-        $seminar->save();
+        if($seminar->save()){
+            $gallery->gallery_type_id = 2; //Seminars
+            $gallery->ref_id = $seminar->seminar_id;
+            $gallery->gallery_description = $request->input('seminar_description');
+            $gallery->gallery_file_path = $request->input('gallery_file_path');
+            $gallery->save();
+
+            $seminar = Seminar::findOrFail($seminar->seminar_id);
+            $seminar->gallery_id = $gallery->gallery_id;
+            $seminar->save();
+        }
+        
+        $data = Seminar::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
+                ->findOrFail($seminar->seminar_id);
 
         //return json based from the resource data
-        return ( new Reference( $seminar ))
+        return ( new Reference( $data ))
                 ->response()
                 ->setStatusCode(201);
+
     }
 
     /**
@@ -83,7 +101,8 @@ class SeminarsController extends Controller
      */
     public function show($id)
     {
-        $seminar = Seminar::findOrFail($id);
+        $seminar = Seminar::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
+                ->findOrFail($id);   
 
         return ( new Reference( $seminar ) )
             ->response()
@@ -110,7 +129,8 @@ class SeminarsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $seminar = Seminar::findOrFail($id);
+        $seminar = Seminar::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
+                    ->findOrFail($id);
 
         Validator::make($request->all(),
             [
@@ -136,13 +156,30 @@ class SeminarsController extends Controller
         $seminar->modified_datetime = Carbon::now();
         $seminar->modified_by = Auth::user()->id;
 
+        if($seminar->update()){
+            
+            Gallery::where('gallery_type_id',2)->where('ref_id', $id)->delete();
 
-        //update  based on the http json body that is sent
-        $seminar->update();
+            $gallery = new Gallery;
+            $gallery->gallery_type_id = 2; //Seminars
+            $gallery->ref_id = $seminar->seminar_id;
+            $gallery->gallery_description = $request->input('seminar_description');
+            $gallery->gallery_file_path = $request->input('gallery_file_path');
+            $gallery->save();
 
-        return ( new Reference( $seminar ) )
-            ->response()
-            ->setStatusCode(200);
+            $seminar = Seminar::findOrFail($seminar->seminar_id);
+            $seminar->gallery_id = $gallery->gallery_id;
+            $seminar->save();
+        }
+        
+        $data = Seminar::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
+                ->findOrFail($id);
+
+        //return json based from the resource data
+        return ( new Reference( $data ))
+                ->response()
+                ->setStatusCode(200);
+
     }
 
     

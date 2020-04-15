@@ -29,6 +29,28 @@
                                         <b-form autocomplete="off">
                                             <b-row>
                                                 <b-col sm="3">
+                                                    <b-form-group>
+                                                        <b-row>
+                                                            <b-col lg=12>
+                                                                <div class="border" style="height: 200px; width: 100%;">
+                                                                    <b-img :src="forms.companysetting.fields.logo" style="width:100%!important;height: 200px;"/>
+                                                                </div>
+                                                            </b-col>
+                                                        </b-row>
+                                                        <b-row class="mt-2">
+                                                            <b-col lg=3>
+                                                            </b-col>
+                                                            <b-col lg=9>
+                                                                <b-form-file @change="fieldChange" ref="file" accept=".jpg, .png, .gif" plain style="display: none;"></b-form-file>
+                                                                <b-btn variant="success" @click="$refs.file.$el.click()">
+                                                                    <i class="fa fa-file-image-o"></i> Browse
+                                                                </b-btn>
+                                                                <b-btn variant="danger" @click="$refs.file.reset(), forms.companysetting.fields.logo = null">
+                                                                    <i class="fa fa-times"></i> Remove
+                                                                </b-btn>
+                                                            </b-col>
+                                                        </b-row>
+                                                    </b-form-group>
                                                 </b-col>
                                                 <b-col sm="6">
                                                     <b-form-group>
@@ -119,31 +141,6 @@
                                                                     type="text"
                                                                     placeholder="Mobile Number">
                                                                 </b-form-input>
-                                                            </b-col>
-                                                        </b-row>
-                                                    </b-form-group>
-                                                    <b-form-group>
-                                                        <b-row>
-                                                            <b-col lg=3>
-                                                                <label class="col-form-label">Logo :</label>
-                                                            </b-col>
-                                                            <b-col lg=9>
-                                                                <div class="border" style="height: 150px; width: 200px;">
-                                                                    <b-img :src="forms.companysetting.fields.logo" width="200" height="150px"/>
-                                                                </div>
-                                                            </b-col>
-                                                        </b-row>
-                                                        <b-row class="mt-2">
-                                                            <b-col lg=3>
-                                                            </b-col>
-                                                            <b-col lg=9>
-                                                                <b-form-file @change="fieldChange" ref="file" accept=".jpg, .png, .gif" plain style="display: none;"></b-form-file>
-                                                                <b-btn variant="success" @click="$refs.file.$el.click()">
-                                                                    <i class="fa fa-file-image-o"></i> Browse
-                                                                </b-btn>
-                                                                <b-btn variant="danger" @click="$refs.file.reset(), forms.companysetting.fields.logo = null">
-                                                                    <i class="fa fa-times"></i> Remove
-                                                                </b-btn>
                                                             </b-col>
                                                         </b-row>
                                                     </b-form-group>

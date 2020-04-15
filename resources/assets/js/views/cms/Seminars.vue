@@ -14,7 +14,7 @@
                         </h5>
                         <b-row class="mb-2">
                             <b-col sm="4">
-                                    <b-button v-if="checkRights('4-14')" variant="success" @click="$refs.seminarentry.showModalEntry = true, $refs.seminarentry.entryMode='Add', $refs.seminarentry.clearFields('seminar')">
+                                    <b-button v-if="checkRights('5-18')" variant="success" @click="$refs.seminarentry.showModalEntry = true, $refs.seminarentry.entryMode='Add', $refs.seminarentry.clearFields('seminar')">
                                             <i class="fa fa-file-o"></i> &nbsp; Create New Seminar
                                     </b-button>
                             </b-col>
@@ -48,12 +48,15 @@
                                     @filtered="onFiltered($event,'seminars')"
                                     striped hover small show-empty
                                 >
+                                    <template v-slot:cell(gallery_file_path)="{ value }">
+                                            <img :src="value" alt="image">
+                                    </template>   
                                     <template v-slot:cell(action)="data">
-                                        <b-btn v-if="checkRights('4-15')" :size="'sm'" variant="primary" @click="$refs.seminarentry.setUpdate(data)">
+                                        <b-btn v-if="checkRights('5-19')" :size="'sm'" variant="primary" @click="$refs.seminarentry.setUpdate(data)">
                                             <i class="fa fa-edit"></i>
                                         </b-btn>
 
-                                        <b-btn v-if="checkRights('4-16')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.seminar_id)">
+                                        <b-btn v-if="checkRights('5-20')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.seminar_id)">
                                             <i class="fa fa-trash"></i>
                                         </b-btn>
                                     </template>
@@ -94,6 +97,12 @@ export default {
             tables: {
                 seminars: {
                     fields:[
+                        {
+                            key:'gallery_file_path',
+                            label: 'Cover Image',
+                            thStyle: {width: '150px'},
+                            tdClass: 'align-middle'
+                        },      
                         {
                             key:'seminar_title',
                             label: 'Seminar Title',
@@ -146,7 +155,7 @@ export default {
     computed: {
         checkAction(){
             if(this.$store.state.rights.length > 0){
-                if((this.checkRights('4-15') || this.checkRights('4-16')) == false){
+                if((this.checkRights('5-19') || this.checkRights('5-20')) == false){
                     this.tables.seminars.fields.pop()
                 }
             }
@@ -159,3 +168,9 @@ export default {
   }
 </script>
 
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  img {
+    height: 5rem;
+  }
+</style>

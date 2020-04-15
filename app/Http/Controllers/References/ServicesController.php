@@ -53,11 +53,17 @@ class ServicesController extends Controller
         $service->created_datetime = Carbon::now();
         $service->created_by = Auth::user()->id;
         $service->save();
+        
+        $data = Service::
+                leftJoin('b_refcategory', 'b_refcategory.category_id', '=', 'services.category_id')
+                ->leftJoin('services_type', 'services_type.service_type_id', '=', 'services.service_type_id')
+                ->findOrFail($service->service_id);
 
         //return json based from the resource data
-        return ( new Reference( $service ))
+        return ( new Reference( $data ))
                 ->response()
                 ->setStatusCode(201);
+
     }
 
     /**
@@ -125,11 +131,15 @@ class ServicesController extends Controller
         $service->modified_datetime = Carbon::now();
         $service->modified_by = Auth::user()->id;
 
-
         //update  based on the http json body that is sent
         $service->update();
 
-        return ( new Reference( $service ) )
+        $data = Service::
+                leftJoin('b_refcategory', 'b_refcategory.category_id', '=', 'services.category_id')
+                ->leftJoin('services_type', 'services_type.service_type_id', '=', 'services.service_type_id')
+                ->findOrFail($id);
+
+        return ( new Reference( $data ) )
             ->response()
             ->setStatusCode(200);
     }
