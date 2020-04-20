@@ -14,7 +14,7 @@
                         </h5>
                         <b-row class="mb-2">
                             <b-col sm="4">
-                                    <b-button v-if="checkRights('7-26')" variant="success" @click="$refs.careerentry.showModalEntry = true, $refs.careerentry.entryMode='Add', $refs.careerentry.clearFields('career')">
+                                    <b-button v-if="checkRights('9-34')" variant="success" @click="$refs.careerentry.showModalEntry = true, $refs.careerentry.entryMode='Add', $refs.careerentry.clearFields('career')">
                                             <i class="fa fa-file-o"></i> &nbsp; Create New Career
                                     </b-button>
                             </b-col>
@@ -49,11 +49,11 @@
                                     striped hover small show-empty
                                 >
                                     <template v-slot:cell(action)="data">
-                                        <b-btn v-if="checkRights('7-27')" :size="'sm'" variant="primary" @click="$refs.careerentry.setUpdate(data)">
+                                        <b-btn v-if="checkRights('9-35')" :size="'sm'" variant="primary" @click="$refs.careerentry.setUpdate(data)">
                                             <i class="fa fa-edit"></i>
                                         </b-btn>
 
-                                        <b-btn v-if="checkRights('7-28')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.career_id)">
+                                        <b-btn v-if="checkRights('9-36')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.career_id)">
                                             <i class="fa fa-trash"></i>
                                         </b-btn>
                                     </template>
@@ -134,7 +134,7 @@ export default {
     computed: {
         checkAction(){
             if(this.$store.state.rights.length > 0){
-                if((this.checkRights('7-27') || this.checkRights('7-28')) == false){
+                if((this.checkRights('9-35') || this.checkRights('9-36')) == false){
                     this.tables.careers.fields.pop()
                 }
             }

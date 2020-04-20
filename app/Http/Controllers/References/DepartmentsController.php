@@ -36,34 +36,12 @@ class DepartmentsController extends Controller
             [
                 'department_code' => 'required',
                 'department_desc' => 'required',
-                'department_address' => 'required',
-                'signatory_1' => 'required',
-                'signatory_1_position' => 'required',
-                'signatory_2' => 'required',
-                'signatory_2_position' => 'required',
-                'signatory_3' => 'required',
-                'signatory_3_position' => 'required',
-                'start_day' => 'required',
-                'end_day' => 'required',
-                'is_same' => 'required',
-                'cut_off_day' => 'required'
             ]
         )->validate();
 
         $department = new Department();
         $department->department_code = $request->input('department_code');
         $department->department_desc = $request->input('department_desc');
-        $department->department_address = $request->input('department_address');
-        $department->signatory_1 = $request->input('signatory_1');
-        $department->signatory_1_position = $request->input('signatory_1_position');
-        $department->signatory_2 = $request->input('signatory_2');
-        $department->signatory_2_position = $request->input('signatory_2_position');
-        $department->signatory_3 = $request->input('signatory_3');
-        $department->signatory_3_position = $request->input('signatory_3_position');
-        $department->start_day = $request->input('start_day');
-        $department->end_day = $request->input('end_day');
-        $department->is_same = $request->input('is_same');
-        $department->cut_off_day = $request->input('cut_off_day');
         $department->created_datetime = Carbon::now();
         $department->created_by = Auth::user()->id;
     
@@ -127,34 +105,12 @@ class DepartmentsController extends Controller
             [
                 'department_code' => 'required',
                 'department_desc' => 'required',
-                'department_address' => 'required',
-                'signatory_1' => 'required',
-                'signatory_1_position' => 'required',
-                'signatory_2' => 'required',
-                'signatory_2_position' => 'required',
-                'signatory_3' => 'required',
-                'signatory_3_position' => 'required',
-                'start_day' => 'required',
-                'end_day' => 'required',
-                'is_same' => 'required',
-                'cut_off_day' => 'required'
             ]
         )->validate();
 
         
         $department->department_code = $request->input('department_code');
         $department->department_desc = $request->input('department_desc');
-        $department->department_address = $request->input('department_address');
-        $department->signatory_1 = $request->input('signatory_1');
-        $department->signatory_1_position = $request->input('signatory_1_position');
-        $department->signatory_2 = $request->input('signatory_2');
-        $department->signatory_2_position = $request->input('signatory_2_position');
-        $department->signatory_3 = $request->input('signatory_3');
-        $department->signatory_3_position = $request->input('signatory_3_position');
-        $department->start_day = $request->input('start_day');
-        $department->end_day = $request->input('end_day');
-        $department->is_same = $request->input('is_same');
-        $department->cut_off_day = $request->input('cut_off_day');
         $department->modified_datetime = Carbon::now();
         $department->modified_by = Auth::user()->id;
 

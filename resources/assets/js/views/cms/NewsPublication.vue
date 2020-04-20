@@ -14,7 +14,7 @@
                         </h5>
                         <b-row class="mb-2">
                             <b-col sm="4">
-                                    <b-button v-if="checkRights('4-14')" variant="success" @click="$refs.newspublicationentry.showModalEntry = true, $refs.newspublicationentry.entryMode='Add', $refs.newspublicationentry.clearFields('newspublication')">
+                                    <b-button v-if="checkRights('6-22')" variant="success" @click="$refs.newspublicationentry.showModalEntry = true, $refs.newspublicationentry.entryMode='Add', $refs.newspublicationentry.clearFields('newspublication')">
                                             <i class="fa fa-file-o"></i> &nbsp; Publish News
                                     </b-button>
                             </b-col>
@@ -52,11 +52,11 @@
                                             <img :src="value" alt="image">
                                     </template>                                
                                     <template v-slot:cell(action)="data">
-                                        <b-btn v-if="checkRights('4-15')" :size="'sm'" variant="primary" @click="$refs.newspublicationentry.setUpdate(data)">
+                                        <b-btn v-if="checkRights('6-23')" :size="'sm'" variant="primary" @click="$refs.newspublicationentry.setUpdate(data)">
                                             <i class="fa fa-edit"></i>
                                         </b-btn>
 
-                                        <b-btn v-if="checkRights('4-16')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.news_id)">
+                                        <b-btn v-if="checkRights('6-24')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.news_id)">
                                             <i class="fa fa-trash"></i>
                                         </b-btn>
                                     </template>
@@ -148,7 +148,7 @@ export default {
     computed: {
         checkAction(){
             if(this.$store.state.rights.length > 0){
-                if((this.checkRights('4-15') || this.checkRights('4-16')) == false){
+                if((this.checkRights('6-23') || this.checkRights('6-24')) == false){
                     this.tables.newspublications.fields.pop()
                 }
             }

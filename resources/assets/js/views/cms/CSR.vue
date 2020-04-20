@@ -14,7 +14,7 @@
                         </h5>
                         <b-row class="mb-2">
                             <b-col sm="4">
-                                    <b-button v-if="checkRights('6-22')" variant="success" @click="$refs.csrentry.showModalEntry = true, $refs.csrentry.entryMode='Add', $refs.csrentry.clearFields('csr')">
+                                    <b-button v-if="checkRights('8-30')" variant="success" @click="$refs.csrentry.showModalEntry = true, $refs.csrentry.entryMode='Add', $refs.csrentry.clearFields('csr')">
                                             <i class="fa fa-file-o"></i> &nbsp; Create New
                                     </b-button>
                             </b-col>
@@ -52,11 +52,11 @@
                                             <img :src="value" alt="image">
                                     </template>       
                                     <template v-slot:cell(action)="data">
-                                        <b-btn v-if="checkRights('6-23')" :size="'sm'" variant="primary" @click="$refs.csrentry.setUpdate(data)">
+                                        <b-btn v-if="checkRights('8-31')" :size="'sm'" variant="primary" @click="$refs.csrentry.setUpdate(data)">
                                             <i class="fa fa-edit"></i>
                                         </b-btn>
 
-                                        <b-btn v-if="checkRights('6-24')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.csr_id)">
+                                        <b-btn v-if="checkRights('8-32')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.csr_id)">
                                             <i class="fa fa-trash"></i>
                                         </b-btn>
                                     </template>
@@ -143,7 +143,7 @@ export default {
     computed: {
         checkAction(){
             if(this.$store.state.rights.length > 0){
-                if((this.checkRights('6-23') || this.checkRights('6-24')) == false){
+                if((this.checkRights('8-31') || this.checkRights('8-32')) == false){
                     this.tables.csrs.fields.pop()
                 }
             }

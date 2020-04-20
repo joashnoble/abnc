@@ -9,24 +9,36 @@ export default {
       name: 'References',
       url: '/references',
       icon: 'icon-book-open',
-      rights: [1,2,3],
+      rights: [1,2,3,4,5],
       children:[
+        {
+          name: 'Departments',
+          url: '/references/departments',
+          rights: '1-1',
+          icon: 'icon-folder'
+        },     
+        {
+          name: 'Industries',
+          url: '/references/industries',
+          rights: '2-5',
+          icon: 'icon-folder'
+        },                
         {
           name: 'Service Categories',
           url: '/references/categories',
-          rights: '1-1',
+          rights: '3-9',
           icon: 'icon-folder'
         },
         {
           name: 'Service Type',
           url: '/references/ServiceType',
-          rights: '2-5',
+          rights: '4-13',
           icon: 'icon-folder'
         },
         {
           name: 'Services',
           url: '/references/services',
-          rights: '3-9',
+          rights: '5-17',
           icon: 'icon-folder'
         }                
       ]
@@ -35,38 +47,50 @@ export default {
       name: 'Content Management',
       url: '/cms',
       icon: 'icon-wrench',
-      rights: [4,5,6,7],
+      rights: [6,7,8,9,10,11,12],
       children:[
         {
           name: 'News and Publication',
           url: '/cms/newspublication',
-          rights: '4-13',
+          rights: '6-21',
           icon: 'icon-list'
         },
         {
           name: 'Seminars',
           url: '/cms/seminars',
-          rights: '5-17',
+          rights: '7-25',
           icon: 'icon-list'
         },    
-        // {
-        //   name: 'Gallery',
-        //   url: '/cms/gallery',
-        //   rights: '2-5',
-        //   icon: 'icon-list'
-        // },   
         {
           name: 'CSR',
           url: '/cms/csr',
-          rights: '6-21',
+          rights: '8-29',
           icon: 'icon-list'
         }, 
         {
           name: 'Careers',
           url: '/cms/careers',
-          rights: '7-25',
+          rights: '9-33',
           icon: 'icon-list'
-        },                                
+        },    
+        // {
+        //   name: 'Gallery',
+        //   url: '/cms/gallery',
+        //   rights: '10-37',
+        //   icon: 'icon-list'
+        // },           
+        {
+          name: 'Teams',
+          url: '/cms/teams',
+          rights: '11-41',
+          icon: 'icon-list'
+        },    
+        {
+          name: 'Carousel',
+          url: '/cms/carousels',
+          rights: '12-45',
+          icon: 'icon-list'
+        },                                        
       ]
     },
     // {
@@ -175,24 +199,24 @@ export default {
       name: 'Settings',
       url: '/accounts',
       icon: 'icon-settings',
-      rights: [8,9,10],
+      rights: [13,14,15],
       children:[
         {
           name: 'Users',
           url: '/accounts/users',
-          rights: '8-29',
+          rights: '13-49',
           icon: 'icon-user'
         },
         {
           name: 'User Group',
           url: '/accounts/user_groups',
-          rights: '9-33',
+          rights: '14-53',
           icon: 'icon-people'
         },
         {
           name: 'Company Settings',
           url: '/accounts/company_settings',
-          rights: '10-37',
+          rights: '15-57',
           icon: 'icon-settings'
         }
       ]

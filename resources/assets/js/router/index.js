@@ -30,17 +30,11 @@ import Logout from '@/views/pages/Logout'
 import Register from '@/views/pages/Register'
 
 //Views - References
-// import tenants from '@/views/references/Tenants'
-// import departments from '@/views/references/Departments'
-// import charges from '@/views/references/Charges'
+import departments from '@/views/references/Departments'
+import industries from '@/views/references/Industries'
 import categories from '@/views/references/Categories'
 import servicetype from '@/views/references/ServiceType'
 import services from '@/views/references/Services'
-// import locations from '@/views/references/Locations'
-// import contracttypes from '@/views/references/ContractTypes'
-// import checktypes from '@/views/references/CheckTypes'
-// import natureofbusiness from '@/views/references/NatureOfBusiness'
-// import billingperiods from '@/views/references/BillingPeriods'
 
 //Views - Content Management
 import newspublication from '@/views/cms/NewsPublication'
@@ -48,6 +42,8 @@ import seminars from '@/views/cms/Seminars'
 import gallery from '@/views/cms/Gallery'
 import csr from '@/views/cms/CSR'
 import careers from '@/views/cms/careers'
+import teams from '@/views/cms/Teams'
+import carousels from '@/views/cms/Carousels'
 
 //Views - Utilities
 import users from '@/views/utilities/Users'
@@ -98,11 +94,6 @@ const router = new Router({
           component: Dashboard,
           meta: { requiresAuth: true },
         },        
-        // {
-        //   path: 'charts',
-        //   name: 'Charts',
-        //   component: Charts
-        // },
         {
           path: 'references',
           name: 'References',
@@ -110,67 +101,36 @@ const router = new Router({
             render (c) { return c('router-view') }
           },
           children: [
-            // {
-            //   path: 'departments',
-            //   name: 'Departments',
-            //   component: departments,
-            //   meta: {requiresAuth: true, rights: '2-5'}
-            // },
+            {
+              path: 'departments',
+              name: 'Departments',
+              component: departments,
+              meta: {requiresAuth: true, rights: '1-1'}
+            },
+            {
+              path: 'industries',
+              name: 'Industries',
+              component: industries,
+              meta: {requiresAuth: true, rights: '2-5'}
+            },                 
             {
               path: 'categories',
               name: 'Categories',
               component: categories,
-              meta: {requiresAuth: true, rights: '1-1'}
+              meta: {requiresAuth: true, rights: '3-9'}
             },
             {
               path: 'servicetype',
               name: 'Service Type',
               component: servicetype,
-              meta: {requiresAuth: true, rights: '2-5'}
+              meta: {requiresAuth: true, rights: '4-13'}
             },   
             {
               path: 'services',
               name: 'Services',
               component: services,
-              meta: {requiresAuth: true, rights: '3-9'}
-            },                        
-            // {
-            //   path: 'charges',
-            //   name: 'Charges',
-            //   component: charges,
-            //   meta: {requiresAuth: true, rights: '3-9'},
-            // },
-            // {
-            //   path: 'locations',
-            //   name: 'Locations',
-            //   component: locations,
-            //   meta: {requiresAuth: true, rights: '5-17'}
-            // },
-            // {
-            //   path: 'contracttypes',
-            //   name: 'Contract Types',
-            //   component: contracttypes,
-            //   meta: {requiresAuth: true, rights: '6-21'}
-            // },
-            // {
-            //   path: 'checktypes',
-            //   name: 'Check Types',
-            //   component: checktypes,
-            //   meta: {requiresAuth: true, rights: '7-25'}
-            // },
-            // {
-            //   path: 'natureofbusiness',
-            //   name: 'Nature Of Business',
-            //   component: natureofbusiness,
-            //   meta: {requiresAuth: true, rights: '8-29'}
-            // },
-            // {
-            //   path: 'billingperiods',
-            //   name: 'Billing Periods',
-            //   component: billingperiods,
-            //   meta: {requiresAuth: true, rights: '9-33'},
-            // },
-
+              meta: {requiresAuth: true, rights: '5-17'}
+            }          
           ]
         },
         {
@@ -184,31 +144,43 @@ const router = new Router({
               path: 'newspublication',
               name: 'News Publication',
               component: newspublication,
-              meta: {requiresAuth: true, rights: '4-13'}
+              meta: {requiresAuth: true, rights: '6-21'}
             },
             {
               path: 'seminars',
               name: 'Seminars',
               component: seminars,
-              meta: {requiresAuth: true, rights: '5-17'}
+              meta: {requiresAuth: true, rights: '7-25'}
+            },  
+            {
+              path: 'csr',
+              name: 'CSR',
+              component: csr,
+              meta: {requiresAuth: true, rights: '8-29'}
+            },     
+            {
+              path: 'careers',
+              name: 'Careers',
+              component: careers,
+              meta: {requiresAuth: true, rights: '9-33'}
             },
             {
               path: 'gallery',
               name: 'Gallery',
               component: gallery,
               meta: {requiresAuth: true, rights: '10-37'}
-            },   
+            },             
             {
-              path: 'csr',
-              name: 'CSR',
-              component: csr,
-              meta: {requiresAuth: true, rights: '6-21'}
-            },     
+              path: 'teams',
+              name: 'Teams',
+              component: teams,
+              meta: {requiresAuth: true, rights: '11-41'}
+            },
             {
-              path: 'careers',
-              name: 'Careers',
-              component: careers,
-              meta: {requiresAuth: true, rights: '7-25'}
+              path: 'carousels',
+              name: 'Carousel',
+              component: carousels,
+              meta: {requiresAuth: true, rights: '12-45'}
             }                                    
           ]
         },
@@ -223,7 +195,7 @@ const router = new Router({
               path: 'users',
               name: 'Users',
               component: users,
-              meta: {requiresAuth: true, rights: '8-29'}
+              meta: {requiresAuth: true, rights: '13-49'}
             },
             {
               path: 'profile',
@@ -235,13 +207,13 @@ const router = new Router({
               path: 'user_groups',
               name: 'User Groups',
               component: usergroups,
-              meta: {requiresAuth: true, rights: '9-33'}
+              meta: {requiresAuth: true, rights: '14-53'}
             },
             {
               path: 'company_settings',
               name: 'Company Settings',
               component: companysettings,
-              meta: {requiresAuth: true, rights: '10-37'}
+              meta: {requiresAuth: true, rights: '15-57'}
             }
           ]
         },

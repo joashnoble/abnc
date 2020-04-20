@@ -14,7 +14,7 @@
                         </h5>
                         <b-row class="mb-2">
                             <b-col sm="4">
-                                    <b-button v-if="checkRights('5-18')" variant="success" @click="$refs.seminarentry.showModalEntry = true, $refs.seminarentry.entryMode='Add', $refs.seminarentry.clearFields('seminar')">
+                                    <b-button v-if="checkRights('7-26')" variant="success" @click="$refs.seminarentry.showModalEntry = true, $refs.seminarentry.entryMode='Add', $refs.seminarentry.clearFields('seminar')">
                                             <i class="fa fa-file-o"></i> &nbsp; Create New Seminar
                                     </b-button>
                             </b-col>
@@ -52,11 +52,11 @@
                                             <img :src="value" alt="image">
                                     </template>   
                                     <template v-slot:cell(action)="data">
-                                        <b-btn v-if="checkRights('5-19')" :size="'sm'" variant="primary" @click="$refs.seminarentry.setUpdate(data)">
+                                        <b-btn v-if="checkRights('7-27')" :size="'sm'" variant="primary" @click="$refs.seminarentry.setUpdate(data)">
                                             <i class="fa fa-edit"></i>
                                         </b-btn>
 
-                                        <b-btn v-if="checkRights('5-20')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.seminar_id)">
+                                        <b-btn v-if="checkRights('7-28')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.seminar_id)">
                                             <i class="fa fa-trash"></i>
                                         </b-btn>
                                     </template>
@@ -155,7 +155,7 @@ export default {
     computed: {
         checkAction(){
             if(this.$store.state.rights.length > 0){
-                if((this.checkRights('5-19') || this.checkRights('5-20')) == false){
+                if((this.checkRights('7-27') || this.checkRights('7-28')) == false){
                     this.tables.seminars.fields.pop()
                 }
             }

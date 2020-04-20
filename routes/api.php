@@ -38,67 +38,39 @@ Route::middleware('auth:api')->group(function () {
    //DASHBOARD
    Route::get('dashboard/index/{payment_type}', 'References\DashboardController@index');
    Route::get('dashboard/payment/{payment_type}/{is_string}', 'References\DashboardController@getPaymentLine');
-   //END DASHBOARD
+
    // List of Charges
-   Route::get('charges', 'References\ChargesController@index');
-   // List of Account
    Route::get('accounts', 'References\AccountTitlesController@index');
-   //List single charge
+   Route::get('charges', 'References\ChargesController@index');
    Route::get('charge/{id}', 'References\ChargesController@show');
-   //Create new category
    Route::post('charge', 'References\ChargesController@create');
-   //Update charge
    Route::put('charge/{id}', 'References\ChargesController@update');
-   //Delete charge
    Route::put('charge/delete/{id}', 'References\ChargesController@delete');
-   //Check if charge was used
    Route::get('chargecheck/{id}', 'References\ChargesController@checkIfUsed');
-   // Charges
 
    //List billing period
    Route::get('periods', 'References\BillingPeriodController@index');
-   //List billing period
    Route::get('period/{id}', 'References\BillingPeriodController@show');
-   //Create billing period
    Route::post('period', 'References\BillingPeriodController@create');
-   //Update billing period
    Route::put('period/{id}', 'References\BillingPeriodController@update');
-   //Delete billing period
    Route::put('period/delete/{id}', 'References\BillingPeriodController@delete');
-   //Check if billing period was used
    Route::get('periodcheck/{id}', 'References\BillingPeriodController@checkIfUsed');
-   // END billing period
 
    //List check types
    Route::get('checktypes', 'References\CheckTypeController@index');
-   //List check type
    Route::get('checktype/{id}', 'References\CheckTypeController@show');
-   //Create check type
    Route::post('checktype', 'References\CheckTypeController@create');
-   //Update check type
    Route::put('checktype/{id}', 'References\CheckTypeController@update');
-   //Delete check type
    Route::put('checktype/delete/{id}', 'References\CheckTypeController@delete');
-   //Check if check type was used
    Route::get('checktypecheck/{id}', 'References\CheckTypeController@checkIfUsed');
-   // END check types
-
-   Route::get('charges', 'References\ChargesController@index');
-
 
    //List categories
    Route::get('categories', 'References\CategoriesController@index');
-   //List single category
    Route::get('category/{id}', 'References\CategoriesController@show');
-   //Create new category
    Route::post('category', 'References\CategoriesController@create');
-   //Update category
    Route::put('category/{id}', 'References\CategoriesController@update');
-   //Delete category
    Route::put('category/delete/{id}', 'References\CategoriesController@delete');
-   //Check if category was used
    Route::get('categorycheck/{id}', 'References\CategoriesController@checkIfUsed');
-   // END categories
 
     // List Service Type
    Route::get('servicestype', 'References\ServiceTypeController@index');
@@ -134,7 +106,21 @@ Route::middleware('auth:api')->group(function () {
     Route::get('career/{id}', 'ContentManagement\CareersController@show');
     Route::post('career', 'ContentManagement\CareersController@create');
     Route::put('career/{id}', 'ContentManagement\CareersController@update');
-    Route::put('career/delete/{id}', 'ContentManagement\CareersController@delete');      
+    Route::put('career/delete/{id}', 'ContentManagement\CareersController@delete');     
+    
+    // List Teams
+    Route::get('teams', 'ContentManagement\TeamsController@index');
+    Route::get('team/{id}', 'ContentManagement\TeamsController@show');
+    Route::post('team', 'ContentManagement\TeamsController@create');
+    Route::put('team/{id}', 'ContentManagement\TeamsController@update');
+    Route::put('team/delete/{id}', 'ContentManagement\TeamsController@delete');       
+    
+    // List Carousel
+    Route::get('carousels', 'ContentManagement\CarouselsController@index');
+    Route::get('carousel/{id}', 'ContentManagement\CarouselsController@show');
+    Route::post('carousel', 'ContentManagement\CarouselsController@create');
+    Route::put('carousel/{id}', 'ContentManagement\CarouselsController@update');
+    Route::put('carousel/delete/{id}', 'ContentManagement\CarouselsController@delete');       
 
     // List Services
     Route::get('services', 'References\ServicesController@index');
@@ -143,61 +129,45 @@ Route::middleware('auth:api')->group(function () {
     Route::put('service/{id}', 'References\ServicesController@update');
     Route::put('service/delete/{id}', 'References\ServicesController@delete'); 
 
+   //List Industries
+   Route::get('industries', 'References\IndustriesController@index');
+   Route::get('industry/{id}', 'References\IndustriesController@show');
+   Route::post('industry', 'References\IndustriesController@create');
+   Route::put('industry/{id}', 'References\IndustriesController@update');
+   Route::put('industry/delete/{id}', 'References\IndustriesController@delete');
+   Route::get('industrycheck/{id}', 'References\IndustriesController@checkIfUsed');
+
    //List departments
    Route::get('departments', 'References\DepartmentsController@index');
-   //List single departments
    Route::get('department/{id}', 'References\DepartmentsController@show');
-   //Create new departments
    Route::post('department', 'References\DepartmentsController@create');
-   //Update departments
    Route::put('department/{id}', 'References\DepartmentsController@update');
-   //Delete departments
    Route::put('department/delete/{id}', 'References\DepartmentsController@delete');
-   //Check if department was used
    Route::get('departmentcheck/{id}', 'References\DepartmentsController@checkIfUsed');
-   // END departments
 
    //List locations
    Route::get('locations', 'References\LocationsController@index');
-   //List single location
    Route::get('location/{id}', 'References\LocationsController@show');
-   //Create new location
    Route::post('location', 'References\LocationsController@create');
-   //Update location
    Route::put('location/{id}', 'References\LocationsController@update');
-   //Delete location
    Route::put('location/delete/{id}', 'References\LocationsController@delete');
-   //Check if location was used
    Route::get('locationcheck/{id}', 'References\LocationsController@checkIfUsed');
-   // END locations
 
    //List natures
    Route::get('natureofbusinesses', 'References\NatureOfBusinessController@index');
-   //List single nature
    Route::get('natureofbusiness/{id}', 'References\NatureOfBusinessController@show');
-   //Create new nature
    Route::post('natureofbusiness', 'References\NatureOfBusinessController@create');
-   //Update nature
    Route::put('natureofbusiness/{id}', 'References\NatureOfBusinessController@update');
-   //Delete nature
    Route::put('natureofbusiness/delete/{id}', 'References\NatureOfBusinessController@delete');
-   //Check if nature was used
    Route::get('natureofbusinesscheck/{id}', 'References\NatureOfBusinessController@checkIfUsed');
-   // END natures
 
    //List contract types
    Route::get('contracttypes', 'References\ContractTypesController@index');
-   //List single contract type
    Route::get('contracttype/{id}', 'References\ContractTypesController@show');
-   //Create new contract type
    Route::post('contracttype', 'References\ContractTypesController@create');
-   //Update contract type
    Route::put('contracttype/{id}', 'References\ContractTypesController@update');
-   //Delete contract type
    Route::put('contracttype/delete/{id}', 'References\ContractTypesController@delete');
-   //Check if contract type was used
    Route::get('contracttypecheck/{id}', 'References\ContractTypesController@checkIfUsed');
-   // END contract type
 
    //MONTHS
    Route::get('months', 'References\MonthsController@index');
@@ -206,19 +176,15 @@ Route::middleware('auth:api')->group(function () {
    //TENANT
     //List tenants
     Route::get('tenants', 'References\TenantsController@index');
-    //List single tenant
     Route::get('tenant/{id}', 'References\TenantsController@show');
     Route::get('tenant_files/{id}', 'References\TenantsController@showFiles');
     Route::get('tenanthistory/{id}', 'References\TenantsController@tenantHistory');
+
     //Create new tenant
     Route::post('tenant', 'References\TenantsController@create');
-    //Update tenant
     Route::put('tenant/{id}', 'References\TenantsController@update');
-    //Delete tenant
     Route::put('tenant/delete/{id}', 'References\TenantsController@delete');
-    //Check if department was used
     Route::get('tenantcheck/{id}', 'References\TenantsController@checkIfUsed');
-    // END TENANT
      //---------------------------------- REFERENCES -----------------------------------------------
 
      //---------------------------------- UTILITIES ------------------------------------------------

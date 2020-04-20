@@ -4,7 +4,7 @@
         <div class="animated fadeIn"> <!-- main div -->
             <b-row> <!-- main row -->
                 <b-col sm="12">
-                    <b-card class="border-dark card-accent-dark" > <!-- main card -->
+                    <b-card class="card-accent-dark" > <!-- main card -->
                         <h5 slot="header">  <!-- table header -->
                             <span >
                                 <!-- <i class="fa fa-bars"></i>  -->
@@ -14,7 +14,7 @@
                         
                         <b-row class="mb-2"> <!-- row button and search input -->
                             <b-col sm="4">
-                                    <b-button v-if="checkRights('2-6')" variant="success" @click="$refs.departmententry.setCreate()">
+                                    <b-button v-if="checkRights('1-2')" variant="success" @click="$refs.departmententry.setCreate()">
                                             <i class="fa fa-file-o"></i> &nbsp; Create New Department
                                     </b-button>
                             </b-col>
@@ -32,11 +32,6 @@
                                                 debounce="250">
                                     </b-form-input>
                                 </b-input-group>
-                                <!-- <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend"><span type="text" class="input-group-text" ><i class="fa fa-search"></i> &nbsp; Search
-                                    </span></div>
-                                    <input type="text" class="form-control search" placeholder="">
-                                </div> -->
                             </b-col>
                         </b-row> <!-- row button and search input -->
                         <b-row> <!-- row table -->
@@ -52,11 +47,11 @@
                                     hover  small show-empty
                                 > <!-- table -->
                                 <template v-slot:cell(action)="data" > <!-- action slot  :to="{path: 'categories/' + data.item.id } -->
-                                    <b-btn v-if="checkRights('2-7')" :size="'sm'" variant="primary" @click="$refs.departmententry.setUpdate(data)">
+                                    <b-btn v-if="checkRights('1-3')" :size="'sm'" variant="primary" @click="$refs.departmententry.setUpdate(data)">
                                         <i class="fa fa-edit"></i>
                                     </b-btn>
 
-                                    <b-btn v-if="checkRights('2-8')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.department_id)">
+                                    <b-btn v-if="checkRights('1-4')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.department_id)">
                                         <i class="fa fa-trash"></i>
                                     </b-btn>
                                 </template>
@@ -111,48 +106,6 @@ export default {
                     tdClass: 'align-middle',
                     sortable: true
                 },
-                {
-                    key: 'signatory_1',
-                    label: 'Signatory 1',
-                    thStyle: {width: '120px'},
-                    tdClass: 'align-middle',
-                    sortable: true
-                },
-                {
-                    key: 'signatory_1_position',
-                    label: 'Position',
-                    thStyle: {width: '130px'},
-                    tdClass: 'align-middle',
-                    sortable: true
-                },
-                {
-                    key: 'signatory_2',
-                    label: 'Signatory 2',
-                    thStyle: {width: '120px'},
-                    tdClass: 'align-middle',
-                    sortable: true
-                },
-                {
-                    key: 'signatory_2_position',
-                    label: 'Position',
-                    thStyle: {width: '130px'},
-                    tdClass: 'align-middle',
-                    sortable: true
-                },
-                {
-                    key: 'signatory_3',
-                    label: 'Signatory 3',
-                    thStyle: {width: '120px'},
-                    tdClass: 'align-middle',
-                    sortable: true
-                },
-                {
-                    key: 'signatory_3_position',
-                    label: 'Position',
-                    thStyle: {width: '130px'},
-                    tdClass: 'align-middle',
-                    sortable: true
-                },
                 {   
                     key: 'action',
                     label: '',
@@ -180,7 +133,7 @@ export default {
     computed: {
         checkAction(){
             if(this.$store.state.rights.length > 0){
-                if((this.checkRights('2-7') || this.checkRights('2-8')) == false){
+                if((this.checkRights('1-3') || this.checkRights('1-4')) == false){
                     this.tables.departments.fields.pop()
                 }
             }
