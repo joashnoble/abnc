@@ -33,6 +33,26 @@
                     </b-form-input>
                 </b-form-group>
             </b-form>
+            <b-form-group>
+                <label class="required">Service Category</label>
+                <select2
+                    ref="category_id"
+                    :allowClear="false"
+                    :placeholder="'Select Category'"
+                    v-model="forms.servicetype.fields.category_id">
+                        <option v-for="categories in options.categories.items" :key="categories.category_id" :value="categories.category_id">{{categories.category_desc}}</option>
+                </select2>
+            </b-form-group>
+            <b-form-group>
+                <label class="required">Service Select Type</label>
+                <select2
+                    ref="select_type_id"
+                    :allowClear="false"
+                    :placeholder="'Select Select Type'"
+                    v-model="forms.servicetype.fields.select_type_id">
+                        <option v-for="servicesselecttype in options.servicesselecttype.items" :key="servicesselecttype.select_type_id" :value="servicesselecttype.select_type_id">{{servicesselecttype.select_type}}</option>
+                </select2>
+            </b-form-group> 
         </b-col>
         <div slot="modal-footer">
             <b-button :disabled="forms.servicetype.isSaving" variant="success" @click="onServiceTypeEntry">
@@ -52,13 +72,23 @@ export default {
         return {
             entryMode: 'Add',
             showModalEntry: false, //if true show modal
+            options: {
+                categories: {
+                    items: []
+                },        
+                servicesselecttype: {
+                    items: []
+                },          
+            }, 
             forms: {
                 servicetype : {
                     isSaving: false,
                     fields: {
                         service_type_id: null,
                         service_type_code: null,
-                        service_type_desc: null
+                        service_type_desc: null,
+                        select_type_id:0,
+                        category_id: 0
                     }
                 }
             },
@@ -85,5 +115,9 @@ export default {
             this.entryMode='Edit'
         }
     },
+    created(){
+        this.fillOptionsList('categories'),
+        this.fillOptionsList('servicesselecttype')
+    }    
 }
 </script>

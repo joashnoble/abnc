@@ -32,6 +32,22 @@
                         placeholder="Category Description">
                     </b-form-input>
                 </b-form-group>
+                <b-form-group>
+                    <b-row>
+                        <b-col lg=3>
+                            <label class="required">Sort</label>
+                            <vue-autonumeric 
+                                ref="sort_id"
+                                v-model="forms.category.fields.sort_id"
+                                :class="'form-control text-right'" 
+                                :options="{minimumValue: 0, 
+                                    modifyValueOnWheel: false, 
+                                    emptyInputBehavior: 0,
+                                    decimalPlaces: 0}">
+                            </vue-autonumeric>
+                        </b-col>
+                    </b-row>
+                </b-form-group>   
             </b-form>
         </b-col>
         <div slot="modal-footer">
@@ -51,14 +67,15 @@ export default {
     data() {
         return {
             entryMode: 'Add',
-            showModalEntry: false, //if true show modal
+            showModalEntry: false, //if true show modal          
             forms: {
                 category : {
                     isSaving: false,
                     fields: {
                         category_id: null,
                         category_code: null,
-                        category_desc: null
+                        category_desc: null,
+                        sort_id:0
                     }
                 }
             },
@@ -84,6 +101,6 @@ export default {
             this.fillEntityForm('category', data.item.category_id, 'showModalEntry')
             this.entryMode='Edit'
         }
-    },
+    } 
 }
 </script>

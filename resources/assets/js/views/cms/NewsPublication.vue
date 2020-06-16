@@ -2,7 +2,7 @@
     <!--<b-animated fade-in>  main container -->
     <div>
         <notifications group="notification" />
-        <div class="animated fadeIn">
+        <div v-show="$refs.newspublicationentry !== undefined ? $refs.newspublicationentry.showEntry === false : true" class="animated fadeIn">
             <b-row>
                 <b-col sm="12">
                     <b-card class="card-accent-dark">
@@ -14,9 +14,20 @@
                         </h5>
                         <b-row class="mb-2">
                             <b-col sm="4">
-                                    <b-button v-if="checkRights('6-22')" variant="success" @click="$refs.newspublicationentry.showModalEntry = true, $refs.newspublicationentry.entryMode='Add', $refs.newspublicationentry.clearFields('newspublication')">
+                                    <!-- <b-button v-if="checkRights('6-22')" 
+                                    variant="success" 
+                                    @click="$refs.newspublicationentry.showModalEntry = true, $refs.newspublicationentry.entryMode='Add', $refs.newspublicationentry.clearFields('newspublication')">
+                                            <i class="fa fa-file-o"></i> &nbsp; Publish News
+                                    </b-button> -->
+                                    
+                                    <b-button v-if="checkRights('6-22')" variant="success" @click="$refs.newspublicationentry.setEntry()">
                                             <i class="fa fa-file-o"></i> &nbsp; Publish News
                                     </b-button>
+                                    <!-- <b-button variant="success" 
+                                        v-if="checkRights('6-22')"
+                                        @click="setEntry(false)">
+                                            <i class="fa fa-file-o"></i> &nbsp; Publish News
+                                    </b-button> -->
                             </b-col>
 
                             <b-col  sm="4">
@@ -49,14 +60,58 @@
                                     striped hover small show-empty
                                 >               
                                     <template v-slot:cell(gallery_file_path)="{ value }">
-                                            <img :src="value" alt="image">
-                                    </template>                                
+                                            <img :src="value" alt="image" width="100%">
+                                    </template>   
+                                    <template v-slot:cell(news_title)="data">  
+                                        <span data-toggle="tooltip" :title="data.item.news_title">{{data.item.news_title}}</span>
+                                    </template>    
+                                    <template v-slot:cell(news_description)="data">  
+                                        <span data-toggle="tooltip" :title="data.item.news_description">{{data.item.news_description}}</span>
+                                    </template>    
+                                    <template v-slot:cell(status)="data">  
+                                        <i v-if="data.item.is_show == 0" class="fa fa-check-circle text-success"></i>
+                                        <i v-else-if="data.item.is_show == 1" class="fa fa-times-circle text-danger"></i>
+                                    </template>  
                                     <template v-slot:cell(action)="data">
-                                        <b-btn v-if="checkRights('6-23')" :size="'sm'" variant="primary" @click="$refs.newspublicationentry.setUpdate(data)">
+
+                                        <b-btn 
+                                            v-if="checkRights('6-23')" 
+                                            v-show="data.item.is_show == 1"
+                                            :size="'sm'" 
+                                            variant="success" 
+                                            data-toggle="tooltip" 
+                                            :title="'Hide'"
+                                            @click="$refs.showentry.setVisible(data.item.news_id,false)">
+                                            <i class="fa fa-eye"></i>
+                                        </b-btn>
+
+                                        <b-btn 
+                                            v-if="checkRights('6-23')" 
+                                            v-show="data.item.is_show == 0"
+                                            :size="'sm'" 
+                                            variant="secondary" 
+                                            data-toggle="tooltip" 
+                                            :title="'Show'"
+                                            @click="$refs.showentry.setVisible(data.item.news_id,true)">
+                                            <i class="fa fa-eye-slash"></i>
+                                            {{ data.is_show }}
+                                        </b-btn>
+
+                                        <b-btn v-if="checkRights('6-23')" 
+                                            :size="'sm'" 
+                                            variant="primary" 
+                                            data-toggle="tooltip" 
+                                            :title="'Edit'" 
+                                            @click="$refs.newspublicationentry.setUpdate(data)">
                                             <i class="fa fa-edit"></i>
                                         </b-btn>
 
-                                        <b-btn v-if="checkRights('6-24')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.news_id)">
+                                        <b-btn v-if="checkRights('6-24')" 
+                                            :size="'sm'" 
+                                            variant="danger" 
+                                            data-toggle="tooltip" 
+                                            :title="'Delete'" 
+                                            @click="$refs.deleteentry.setDelete(data.item.news_id)">
                                             <i class="fa fa-trash"></i>
                                         </b-btn>
                                     </template>
@@ -79,17 +134,20 @@
         </div>
         <newspublicationentry type="reference" ref="newspublicationentry"></newspublicationentry>
         <deleteentry entity="newspublication" table="newspublications" primary_key="news_id" ref="deleteentry"></deleteentry>
+        <showentry entity="newspublication" table="newspublications" primary_key="news_id" ref="showentry"></showentry>
     </div>
 </template>
 
 <script>
 import newspublicationentry from '../modals/NewsPublicationEntry'
 import deleteentry from '../modals/DeleteEntry'
+import showentry from '../modals/ShowEntry'
 export default {
     name: 'newspublications',
     components: {
         newspublicationentry,
-        deleteentry
+        deleteentry,
+        showentry
     },
     data () {
         return {
@@ -99,36 +157,65 @@ export default {
                         {
                             key:'gallery_file_path',
                             label: 'Cover Image',
-                            thStyle: {width: '150px'},
+                            thStyle: {width: '15%'},
                             tdClass: 'align-middle'
                         },                        
                         {
                             key:'news_title',
                             label: 'Title',
-                            thStyle: {width: '150px'},
-                            tdClass: 'align-middle',
-                            sortable: true
-                        },
-                        {
-                            key:'news_description',
-                            label: 'Description',
-                            tdClass: 'align-middle',
+                            thStyle: {width: '25%'},
+                            tdClass: 'align-middle ellipsis',
                             sortable: true
                         },
                         {
                             key:'news_publish_date',
                             label: 'Publication Date',
+                            thStyle: {width: '20%'},
                             tdClass: 'align-middle',
                             sortable: true
-                        },                        
+                        },   
+                        {
+                            key:'publisher',
+                            label: 'Published by',
+                            thStyle: {width: '15%'},
+                            tdClass: 'align-middle',
+                            sortable: true
+                        }, 
+                        {
+                            key:'sort_id',
+                            label: 'Sort',
+                            thStyle: {width: '5%'},
+                            tdClass: 'align-middle text-right',
+                            sortable: true
+                        },  
+                        {
+                            key:'status',
+                            label:'Status',
+                            thStyle: {width: '5%', "text-align":"center"},
+                            tdClass: 'text-center align-middle'
+                        },      
                         {
                             key:'action',
-                            label:'',
-                            thStyle: {width: '75px'},
+                            label:'Action',
+                            thStyle: {width: '15%', "text-align":"center"},
                             tdClass: 'text-center align-middle',
                         }                       
                     ],
                     items: []
+                }
+            },
+            forms: {
+                newspublication : {
+                    isSaving: false,
+                    fields: {
+                        news_id: null,
+                        news_title: null,
+                        news_description: null,
+                        news_publish_date: null,
+                        gallery_file_path: null,
+                        gallery_file_paths: null,
+                        id: null
+                    }
                 }
             },
             filters: {
@@ -142,7 +229,8 @@ export default {
                     currentPage: 1,
                     perPage: 10
                 }
-            }
+            },
+            row: []
         }
     },
     computed: {

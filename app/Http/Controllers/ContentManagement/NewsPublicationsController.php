@@ -10,7 +10,9 @@ use App\Models\Transactions\ContractInfo;
 use App\Http\Resources\Reference;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+
 use Auth;
+use DB;
 
 class NewsPublicationsController extends Controller
 {
@@ -21,8 +23,11 @@ class NewsPublicationsController extends Controller
      */
     public function index()
     {
-        $newspublication = NewsPublication::
-                    leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
+        $newspublication = NewsPublication::select('*',
+                    DB::raw('CONCAT_WS("",user.user_lname,", ",user.user_fname,user.user_mname) as publisher'),
+                    DB::raw('DATE_FORMAT(news_publish_date, "%M %d, %Y") as news_publish_date'))
+                    ->leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
+                    ->leftJoin('user_accounts as user', 'user.user_id', '=', 'cms_newspublication.created_by')
                     ->where('cms_newspublication.is_deleted', 0)->orderBy('cms_newspublication.news_id', 'desc')->get();
 
         return Reference::collection($newspublication);
@@ -39,8 +44,8 @@ class NewsPublicationsController extends Controller
         Validator::make($request->all(),
             [
                 'news_title' => 'required',
-                'news_description' => 'required',
-                'news_publish_date' => 'required'              
+                'news_publish_date' => 'required',
+                'news_description' => 'required'              
             ]
         )->validate();
 
@@ -50,6 +55,7 @@ class NewsPublicationsController extends Controller
         $newspublication->news_title = $request->input('news_title');
         $newspublication->news_description = $request->input('news_description');
         $newspublication->news_publish_date = date("Y-m-d",strtotime($request->input('news_publish_date')));
+        $newspublication->sort_id = $request->input('sort_id');
         $newspublication->created_datetime = Carbon::now();
         $newspublication->created_by = Auth::user()->id;
 
@@ -64,9 +70,13 @@ class NewsPublicationsController extends Controller
             $newspublication->gallery_id = $gallery->gallery_id;
             $newspublication->save();
         }
-        
-        $data = NewsPublication::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
-                ->findOrFail($newspublication->news_id);
+
+        $data = NewsPublication::select('*',
+                    DB::raw('CONCAT_WS("",user.user_lname,", ",user.user_fname,user.user_mname) as publisher'),
+                    DB::raw('DATE_FORMAT(news_publish_date, "%M %d, %Y") as news_publish_date'))
+                    ->leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
+                    ->leftJoin('user_accounts as user', 'user.user_id', '=', 'cms_newspublication.created_by')
+                    ->findOrFail($newspublication->news_id);
 
         //return json based from the resource data
         return ( new Reference( $data ))
@@ -121,14 +131,13 @@ class NewsPublicationsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $newspublication = NewsPublication::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
-                ->findOrFail($id);
+        $newspublication = NewsPublication::findOrFail($id);
 
         Validator::make($request->all(),
             [
                 'news_title' => 'required',
-                'news_description' => 'required',
-                'news_publish_date' => 'required' 
+                'news_publish_date' => 'required',
+                'news_description' => 'required' 
             ]
         )->validate();
 
@@ -136,6 +145,7 @@ class NewsPublicationsController extends Controller
         $newspublication->news_title = $request->input('news_title');
         $newspublication->news_description = $request->input('news_description');
         $newspublication->news_publish_date = date("Y-m-d",strtotime($request->input('news_publish_date')));
+        $newspublication->sort_id = $request->input('sort_id');
         $newspublication->modified_datetime = Carbon::now();
         $newspublication->modified_by = Auth::user()->id;
 
@@ -155,9 +165,13 @@ class NewsPublicationsController extends Controller
             $newspublication->save();
 
         }        
-            
-        $data = NewsPublication::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
-        ->findOrFail($id);
+        
+        $data = NewsPublication::select('*',
+                    DB::raw('CONCAT_WS("",user.user_lname,", ",user.user_fname,user.user_mname) as publisher'),
+                    DB::raw('DATE_FORMAT(news_publish_date, "%M %d, %Y") as news_publish_date'))
+                    ->leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
+                    ->leftJoin('user_accounts as user', 'user.user_id', '=', 'cms_newspublication.created_by')
+                    ->findOrFail($id);
 
         //return json based from the resource data
         return ( new Reference( $data ))

@@ -23,6 +23,16 @@
                     </b-form-input>
                 </b-form-group>
                 <b-form-group>
+                    <label class="required">Service Type</label>
+                    <select2
+                        ref="service_type_id"
+                        :allowClear="false"
+                        :placeholder="'Select Type'"
+                        v-model="forms.service.fields.service_type_id">
+                            <option v-for="servicestype in options.servicestype.items" :key="servicestype.service_type_id" :value="servicestype.service_type_id">{{servicestype.service_type_desc}}</option>
+                    </select2>
+                </b-form-group>   
+                <b-form-group>
                     <label class="required">Service Desc</label>
                     <b-form-input
                         ref="service_desc"
@@ -32,27 +42,31 @@
                         type="text"
                         placeholder="Service Description">
                     </b-form-input>
+                </b-form-group> 
+                <b-form-group>
+                    <label>Note</label>
+                    <b-form-textarea
+                        tab="0"
+                        ref="service_note"
+                        id="service_note"
+                        v-model="forms.service.fields.service_note"
+                        debounce="250"
+                        type="text"
+                        :rows="2"
+                        placeholder="Service Note">
+                    </b-form-textarea>
                 </b-form-group>
                 <b-form-group>
-                    <label class="required">Service Category</label>
+                    <label class="required">Service Group Type</label>
                     <select2
-                        ref="category_id"
+                        ref="service_group_type_id"
                         :allowClear="false"
-                        :placeholder="'Select Category'"
-                        v-model="forms.service.fields.category_id">
-                            <option v-for="categories in options.categories.items" :key="categories.category_id" :value="categories.category_id">{{categories.category_desc}}</option>
+                        :placeholder="'Select Group Type'"
+                        v-model="forms.service.fields.service_group_type_id">
+                            <option :key="0" :value="0">None</option>
+                            <option v-for="servicesgrouptype in options.servicesgrouptype.items" :key="servicesgrouptype.service_group_type_id" :value="servicesgrouptype.service_group_type_id">{{servicesgrouptype.service_group_desc}}</option>
                     </select2>
-                </b-form-group>
-                <b-form-group>
-                    <label class="required">Service Type</label>
-                    <select2
-                        ref="service_type_id"
-                        :allowClear="false"
-                        :placeholder="'Select Type'"
-                        v-model="forms.service.fields.service_type_id">
-                            <option v-for="servicestype in options.servicestype.items" :key="servicestype.service_type_id" :value="servicestype.service_type_id">{{servicestype.service_type_desc}}</option>
-                    </select2>
-                </b-form-group>    
+                </b-form-group>                    
                 <b-form-group>
                     <b-row>
                         <b-col lg=6>
@@ -87,10 +101,10 @@ export default {
             entryMode: 'Add',
             showModalEntry: false, //if true show modal
             options: {
-                categories: {
-                    items: []
-                },
                 servicestype: {
+                    items: []
+                },  
+                servicesgrouptype: {
                     items: []
                 },                
             },
@@ -101,8 +115,9 @@ export default {
                         service_id: null,
                         service_code: null,
                         service_desc: null,
-                        category_id: 0,
+                        service_note: null,
                         service_type_id: 0,
+                        service_group_type_id: 0,
                         service_amount: 0
                     }
                 }
@@ -131,8 +146,8 @@ export default {
         }
     },
     created(){
-        this.fillOptionsList('categories'),
-        this.fillOptionsList('servicestype')
+        this.fillOptionsList('servicestype'),
+        this.fillOptionsList('servicesgrouptype')
     }    
 }
 </script>

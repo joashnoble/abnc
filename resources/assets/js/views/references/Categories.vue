@@ -96,7 +96,7 @@ export default {
                     fields:[
                         {
                             key:'category_code',
-                            label: 'Category Code',
+                            label: 'Code',
                             thStyle: {width: '150px'},
                             tdClass: 'align-middle',
                             sortable: true
@@ -104,6 +104,12 @@ export default {
                         {
                             key:'category_desc',
                             label: 'Description',
+                            tdClass: 'align-middle',
+                            sortable: true
+                        },
+                        {
+                            key:'sort_id',
+                            label: 'Sort',
                             tdClass: 'align-middle',
                             sortable: true
                         },

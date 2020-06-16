@@ -349,6 +349,7 @@
         //delete entity from a modal component
         deleteEntityRef (entity, entity_id, isModal, entity_table, primary_key, refs) {
           // this.$refs[refs].forms[entity].isSaving = true
+          this.$refs[refs].isSaving = true
 
           this.$http.put('api/' + entity + '/delete/' + entity_id, entity_id,{
               headers: {
@@ -357,6 +358,7 @@
             })
             .then((response) => {
               // this.$refs[refs].forms[entity].isSaving = false
+              this.$refs[refs].isSaving = false
               this.$notify({
                 type: 'success',
                 group: 'notification',
@@ -371,6 +373,44 @@
 
               if(isModal){
                 this.$refs[refs].showModalDelete = false
+              }
+              
+            }).catch(error => {
+              // this.$refs[refs].forms[entity].isSaving = false
+              if (!error.response) return
+              const errors = error.response.data.errors
+              console.log(errors)
+            })
+        },
+
+
+        //archive entity from a modal component
+        archiveEntityRef (entity, entity_id, isModal, entity_table, primary_key, refs, entity_type, type) {
+          // this.$refs[refs].forms[entity].isSaving = true
+          this.$refs[refs].isSaving = true  
+          
+          this.$http.put('api/archive/' + entity + '/' + entity_type + '/' + entity_id, entity_id,{
+              headers: {
+                      Authorization: 'Bearer ' + localStorage.getItem('token')
+                  }
+            })
+            .then((response) => {
+              // this.$refs[refs].forms[entity].isSaving = false
+              this.$refs[refs].isSaving = false
+              this.$notify({
+                type: 'success',
+                group: 'notification',
+                title: 'Success!',
+                text: 'The record has been ' + type + '.'
+              })
+
+              const index = this.tables[entity_table].items.findIndex(item => item[primary_key] === response.data.data[primary_key])
+
+              this.$delete(this.tables[entity_table].items, index)
+              this.paginations[entity_table].totalRows--
+
+              if(isModal){
+                this.$refs[refs].showModalArchive = false
               }
               
             }).catch(error => {
@@ -455,6 +495,26 @@
             })
         },
 
+        archiveFillTableList (entity,type) {
+          this.$http.get('/api/'+ entity +'/archive/' + type,{
+              headers: {
+                      Authorization: 'Bearer ' + localStorage.getItem('token')
+                  }
+            })
+            .then((response) => {
+              const records = response.data
+              this.tables[entity].items = records.data
+              this.paginations[entity].totalRows = records.data.length
+              // ### commented for future server side pagination
+              // this.paginations[entity].totalRows = records.meta.total
+              // this.paginations[entity].currentPage = records.meta.current_page
+              // this.paginations[entity].perPage = records.meta.per_page
+            }).catch(error => {
+              if (!error.response) return
+              console.log(error)
+            })
+        },        
+        
         //fill options with filter
         filterOptionsList (entity, filter) {
           this.$http.get('api/' + entity + '/' + filter,{

@@ -29,12 +29,16 @@ import Login from '@/views/pages/Login'
 import Logout from '@/views/pages/Logout'
 import Register from '@/views/pages/Register'
 
+//Views - Management
+import clients from '@/views/Management/Clients'
+import services from '@/views/Management/Services'
+
 //Views - References
 import departments from '@/views/references/Departments'
 import industries from '@/views/references/Industries'
 import categories from '@/views/references/Categories'
 import servicetype from '@/views/references/ServiceType'
-import services from '@/views/references/Services'
+import servicegrouptype from '@/views/references/ServiceGroupType'
 
 //Views - Content Management
 import newspublication from '@/views/cms/NewsPublication'
@@ -44,6 +48,9 @@ import csr from '@/views/cms/CSR'
 import careers from '@/views/cms/careers'
 import teams from '@/views/cms/Teams'
 import carousels from '@/views/cms/Carousels'
+
+//Views - Archive Management
+import archiveservices from '@/views/archives/services'
 
 //Views - Utilities
 import users from '@/views/utilities/Users'
@@ -93,7 +100,19 @@ const router = new Router({
           name: 'Dashboard',
           component: Dashboard,
           meta: { requiresAuth: true },
-        },        
+        },     
+        {
+          path: 'clients',
+          name: 'Clients',
+          component: clients,
+          meta: { requiresAuth: true },
+        },           
+        {
+          path: 'services',
+          name: 'Service Management',
+          component: services,
+          meta: {requiresAuth: true, rights: '5-17'}
+        },      
         {
           path: 'references',
           name: 'References',
@@ -126,11 +145,11 @@ const router = new Router({
               meta: {requiresAuth: true, rights: '4-13'}
             },   
             {
-              path: 'services',
-              name: 'Services',
-              component: services,
-              meta: {requiresAuth: true, rights: '5-17'}
-            }          
+              path: 'servicegrouptype',
+              name: 'Service Group Type',
+              component: servicegrouptype,
+              meta: {requiresAuth: true, rights: '4-13'}
+            }    
           ]
         },
         {
@@ -184,6 +203,21 @@ const router = new Router({
             }                                    
           ]
         },
+        {
+          path: 'archives',
+          name: 'Archives Management',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'services',
+              name: 'Services',
+              component: archiveservices,
+              meta: {requiresAuth: true, rights: '1-1'}
+            }
+          ]
+        },        
         {
           path: 'accounts',
           name: 'Accounts',

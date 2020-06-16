@@ -108,6 +108,18 @@ export default {
                             sortable: true
                         },
                         {
+                            key:'category_desc',
+                            label: 'Service Category',
+                            tdClass: 'align-middle',
+                            sortable: true
+                        },
+                        {
+                            key:'select_type',
+                            label: 'Select Type',
+                            tdClass: 'align-middle',
+                            sortable: true
+                        },
+                        {
                             key:'action',
                             label:'',
                             thStyle: {width: '75px'},

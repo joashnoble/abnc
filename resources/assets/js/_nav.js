@@ -6,6 +6,16 @@ export default {
       icon: 'icon-speedometer'
     },
     {
+      name: 'Service Management',
+      url: '/services',
+      icon: 'icon-list'
+    },  
+    {
+      name: 'Clients Management',
+      url: '/clients',
+      icon: 'icon-people'
+    }, 
+    {
       name: 'References',
       url: '/references',
       icon: 'icon-book-open',
@@ -36,11 +46,11 @@ export default {
           icon: 'icon-folder'
         },
         {
-          name: 'Services',
-          url: '/references/services',
-          rights: '5-17',
+          name: 'Service Group Type',
+          url: '/references/ServiceGroupType',
+          rights: '4-13',
           icon: 'icon-folder'
-        }                
+        }              
       ]
     },
     {
@@ -91,6 +101,20 @@ export default {
           rights: '12-45',
           icon: 'icon-list'
         },                                        
+      ]
+    },
+    {
+      name: 'Archive Management',
+      url: '/archives',
+      icon: 'fa fa-archive',
+      rights: [6,7,8,9,10,11,12],
+      children:[
+        {
+          name: 'Services',
+          url: '/archives/services',
+          rights: '6-21',
+          icon: 'icon-list'
+        },                                   
       ]
     },
     // {

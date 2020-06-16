@@ -36,22 +36,27 @@ class CategoriesController extends Controller
         Validator::make($request->all(),
             [
                 'category_code' => 'required',
-                'category_desc' => 'required'
+                'category_desc' => 'required',
+                'sort_id' => 'required',
+
             ]
         )->validate();
 
         $category = new Category();
         $category->category_code = $request->input('category_code');
         $category->category_desc = $request->input('category_desc');
+        $category->sort_id = $request->input('sort_id');
         $category->created_datetime = Carbon::now();
         $category->created_by = Auth::user()->id;
-    
         $category->save();
+
+        $category = Category::findOrFail($category->category_id);
 
         //return json based from the resource data
         return ( new Reference( $category ))
                 ->response()
                 ->setStatusCode(201);
+
     }
 
     /**
@@ -105,19 +110,21 @@ class CategoriesController extends Controller
         Validator::make($request->all(),
             [
                 'category_code' => 'required',
-                'category_desc' => 'required'
+                'category_desc' => 'required',
+                'sort_id' => 'required',
             ]
         )->validate();
 
         
         $category->category_code = $request->input('category_code');
         $category->category_desc = $request->input('category_desc');
+        $category->sort_id = $request->input('sort_id');
         $category->modified_datetime = Carbon::now();
         $category->modified_by = Auth::user()->id;
-
-
         //update  based on the http json body that is sent
         $category->update();
+
+        $category = Category::findOrFail($category->category_id);
 
         return ( new Reference( $category ) )
             ->response()

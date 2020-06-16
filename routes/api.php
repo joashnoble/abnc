@@ -72,6 +72,9 @@ Route::middleware('auth:api')->group(function () {
    Route::put('category/delete/{id}', 'References\CategoriesController@delete');
    Route::get('categorycheck/{id}', 'References\CategoriesController@checkIfUsed');
 
+    //List Service Select Type
+   Route::get('servicesselecttype', 'References\ServiceTypeController@selecttypelist');
+
     // List Service Type
    Route::get('servicestype', 'References\ServiceTypeController@index');
    Route::get('servicetype/{id}', 'References\ServiceTypeController@show');
@@ -79,6 +82,14 @@ Route::middleware('auth:api')->group(function () {
    Route::put('servicetype/{id}', 'References\ServiceTypeController@update');
    Route::put('servicetype/delete/{id}', 'References\ServiceTypeController@delete');
    Route::get('servicetypecheck/{id}', 'References\ServiceTypeController@checkIfUsed');
+
+   //List Service Group Type
+   Route::get('servicesgrouptype', 'References\ServiceGroupTypeController@index');
+   Route::get('servicegrouptype/{id}', 'References\ServiceGroupTypeController@show');
+   Route::post('servicegrouptype', 'References\ServiceGroupTypeController@create');
+   Route::put('servicegrouptype/{id}', 'References\ServiceGroupTypeController@update');
+   Route::put('servicegrouptype/delete/{id}', 'References\ServiceGroupTypeController@delete');
+   Route::get('servicegrouptypecheck/{id}', 'References\ServiceGroupTypeController@checkIfUsed');
 
     // List News Publication
     Route::get('newspublications', 'ContentManagement\NewsPublicationsController@index');
@@ -123,11 +134,20 @@ Route::middleware('auth:api')->group(function () {
     Route::put('carousel/delete/{id}', 'ContentManagement\CarouselsController@delete');       
 
     // List Services
-    Route::get('services', 'References\ServicesController@index');
-    Route::get('service/{id}', 'References\ServicesController@show');
-    Route::post('service', 'References\ServicesController@create');
-    Route::put('service/{id}', 'References\ServicesController@update');
-    Route::put('service/delete/{id}', 'References\ServicesController@delete'); 
+    Route::get('services', 'Management\ServicesController@index');
+    Route::get('services/archive/{type}', 'Management\ServicesController@index');
+    Route::get('service/{id}', 'Management\ServicesController@show');
+    Route::post('service', 'Management\ServicesController@create');
+    Route::put('service/{id}', 'Management\ServicesController@update');
+    Route::put('service/delete/{id}', 'Management\ServicesController@delete'); 
+    Route::get('service/items/{id}', 'Management\ServicesController@serviceitems');
+    Route::get('servicecheck/{id}', 'Management\ServicesController@checkIfUsed');
+
+    //Archive Management
+    Route::put('archive/{entity}/{type}/{id}', 'Management\ArchivesController@archive'); 
+
+    // List Client Management
+    Route::get('clients', 'Management\ClientsController@index');
 
    //List Industries
    Route::get('industries', 'References\IndustriesController@index');
@@ -281,6 +301,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('billings/{period_id}/{department_id}', 'Transactions\BillingsController@index');
     //schedule and charges of billing
     Route::get('billingSC/sc/{id}', 'Transactions\BillingsController@scheduleAndCharges');
+    
     Route::get('billing/balance/{tenant_id}', 'Transactions\BillingsController@getBillingBalance');
     //List single billing
     Route::get('billing/{id}', 'Transactions\BillingsController@show');
