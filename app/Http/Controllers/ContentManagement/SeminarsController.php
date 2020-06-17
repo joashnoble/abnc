@@ -10,7 +10,9 @@ use App\Models\ContentManagement\Gallery;
 use App\Http\Resources\Reference;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+
 use Auth;
+use DB;
 
 class SeminarsController extends Controller
 {
@@ -19,11 +21,20 @@ class SeminarsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($status_id = 'all')
     {
-        $seminar = Seminar::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
-            ->where('is_deleted', 0)->orderBy('seminar_id', 'desc')->get();
-        return Reference::collection($seminar);
+        $seminar = Seminar::select('*',
+            DB::raw('DATE_FORMAT(cms_seminars.seminar_date, "%M %d, %Y") as seminar_date'))
+            ->leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
+            ->where('cms_seminars.is_deleted', 0);
+
+            if($status_id != 'all'){
+                $seminar->where('cms_seminars.is_show', $status_id);
+            }
+
+            $seminar->orderBy('cms_seminars.seminar_id', 'desc');
+
+        return Reference::collection($seminar->get());
     }
 
     /**
@@ -57,6 +68,7 @@ class SeminarsController extends Controller
         $seminar->seminar_time_from = date("H:i:s",strtotime($request->input('seminar_time_from')));
         $seminar->seminar_time_to = date("H:i:s",strtotime($request->input('seminar_time_to')));
         $seminar->seminar_venue = $request->input('seminar_venue');
+        $seminar->sort_id = $request->input('sort_id');
         $seminar->created_datetime = Carbon::now();
         $seminar->created_by = Auth::user()->id;
     
@@ -71,9 +83,11 @@ class SeminarsController extends Controller
             $seminar->gallery_id = $gallery->gallery_id;
             $seminar->save();
         }
-        
-        $data = Seminar::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
-                ->findOrFail($seminar->seminar_id);
+
+        $data = Seminar::select('*',
+                    DB::raw('DATE_FORMAT(seminar_date, "%M %d, %Y") as seminar_date'))
+                    ->leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
+                    ->findOrFail($seminar->seminar_id);
 
         //return json based from the resource data
         return ( new Reference( $data ))
@@ -152,7 +166,8 @@ class SeminarsController extends Controller
         $seminar->seminar_date = date("Y-m-d",strtotime($request->input('seminar_date')));
         $seminar->seminar_time_from = date("H:i:s",strtotime($request->input('seminar_time_from')));
         $seminar->seminar_time_to = date("H:i:s",strtotime($request->input('seminar_time_to')));
-        $seminar->seminar_venue = $request->input('seminar_venue');        
+        $seminar->seminar_venue = $request->input('seminar_venue');     
+        $seminar->sort_id = $request->input('sort_id');   
         $seminar->modified_datetime = Carbon::now();
         $seminar->modified_by = Auth::user()->id;
 
@@ -172,8 +187,10 @@ class SeminarsController extends Controller
             $seminar->save();
         }
         
-        $data = Seminar::leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
-                ->findOrFail($id);
+        $data = Seminar::select('*',
+            DB::raw('DATE_FORMAT(seminar_date, "%M %d, %Y") as seminar_date'))
+            ->leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
+            ->findOrFail($id);
 
         //return json based from the resource data
         return ( new Reference( $data ))
@@ -206,7 +223,23 @@ class SeminarsController extends Controller
             ->setStatusCode(200);
     }
 
+    public function activate($type,$id)
+    {   
+        $status = Seminar::findOrFail($id);
+        $status->is_show = intval($type);
 
+        //update classification based on the http json body that is sent
+        $status->save();
+        
+        $data = Seminar::select('*',
+                    DB::raw('DATE_FORMAT(seminar_date, "%M %d, %Y") as seminar_date'))
+                    ->leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_seminars.gallery_id')
+                    ->findOrFail($id);
+
+        return ( new Reference( $data ) )
+            ->response()
+            ->setStatusCode(200);
+    }
     /**
      * Remove the specified resource from storage.
      *

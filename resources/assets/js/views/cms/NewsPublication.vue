@@ -11,29 +11,34 @@
                                 <!-- <i class="fa fa-bars"></i>  -->
                                 News &amp; Publication List
                                 <small class="font-italic">List of all news and publication.</small></span>
+                                <b-button 
+                                    variant="default" 
+                                    style="float:right;margin-top:1px;" 
+                                    @click="filterStatusList()">
+                                    <i class="fa fa-refresh"></i>
+                                </b-button>
                         </h5>
-                        <b-row class="mb-2">
+                        <b-row class="mb-12">
                             <b-col sm="4">
-                                    <!-- <b-button v-if="checkRights('6-22')" 
-                                    variant="success" 
-                                    @click="$refs.newspublicationentry.showModalEntry = true, $refs.newspublicationentry.entryMode='Add', $refs.newspublicationentry.clearFields('newspublication')">
-                                            <i class="fa fa-file-o"></i> &nbsp; Publish News
-                                    </b-button> -->
-                                    
-                                    <b-button v-if="checkRights('6-22')" variant="success" @click="$refs.newspublicationentry.setEntry()">
-                                            <i class="fa fa-file-o"></i> &nbsp; Publish News
-                                    </b-button>
-                                    <!-- <b-button variant="success" 
-                                        v-if="checkRights('6-22')"
-                                        @click="setEntry(false)">
-                                            <i class="fa fa-file-o"></i> &nbsp; Publish News
-                                    </b-button> -->
+                                <b-button v-if="checkRights('6-22')" variant="success" @click="$refs.newspublicationentry.setEntry()">
+                                        <i class="fa fa-file-o"></i> &nbsp; Publish News
+                                </b-button>
                             </b-col>
-
-                            <b-col  sm="4">
-                                <span></span>
+                            <b-col  sm="2">
+                                <div style="display: inline-block!important;float:right!important; margin-top: 5px!important;"><b>Status:</b></div>
                             </b-col>
-
+                            <b-col  sm="2">
+                                <select2
+                                    v-model="forms.newspublication.fields.status_id"
+                                    :allowClear="false"
+                                    :placeholder="'Select Status'"
+                                    @input="filterStatusList"
+                                    style="width: 100%!important;">
+                                        <option :key="'all'" :value="'all'" selected>All</option>
+                                        <option :key="1" :value="1">Active</option>
+                                        <option :key="0" :value="0">Inactive</option>
+                                </select2>
+                            </b-col>
                             <b-col  sm="4">
                                 <b-input-group prepend-html='<i class="fa fa-search"></i> &nbsp; Search'>
                                     <b-form-input 
@@ -45,7 +50,7 @@
                                 </b-input-group>
                             </b-col>
                         </b-row>
-
+                        <br>
                         <b-row>
                             <b-col sm="12">
                                 <b-table 
@@ -60,7 +65,7 @@
                                     striped hover small show-empty
                                 >               
                                     <template v-slot:cell(gallery_file_path)="{ value }">
-                                            <img :src="value" alt="image" width="100%">
+                                            <img :src="value" alt="image" width="100%" draggable="false">
                                     </template>   
                                     <template v-slot:cell(news_title)="data">  
                                         <span data-toggle="tooltip" :title="data.item.news_title">{{data.item.news_title}}</span>
@@ -69,8 +74,8 @@
                                         <span data-toggle="tooltip" :title="data.item.news_description">{{data.item.news_description}}</span>
                                     </template>    
                                     <template v-slot:cell(status)="data">  
-                                        <i v-if="data.item.is_show == 0" class="fa fa-check-circle text-success"></i>
-                                        <i v-else-if="data.item.is_show == 1" class="fa fa-times-circle text-danger"></i>
+                                        <i v-if="data.item.is_show == 1" class="fa fa-check-circle text-success"></i>
+                                        <i v-else-if="data.item.is_show == 0" class="fa fa-times-circle text-danger"></i>
                                     </template>  
                                     <template v-slot:cell(action)="data">
 
@@ -78,23 +83,22 @@
                                             v-if="checkRights('6-23')" 
                                             v-show="data.item.is_show == 1"
                                             :size="'sm'" 
-                                            variant="success" 
+                                            variant="secondary" 
                                             data-toggle="tooltip" 
-                                            :title="'Hide'"
-                                            @click="$refs.showentry.setVisible(data.item.news_id,false)">
-                                            <i class="fa fa-eye"></i>
+                                            :title="'Deactivate'"
+                                            @click="$refs.showentry.setVisible(data,data.item.news_id,0,'inactive','News and Publication')">
+                                            <i class="fa fa-eye-slash"></i>
                                         </b-btn>
 
                                         <b-btn 
                                             v-if="checkRights('6-23')" 
                                             v-show="data.item.is_show == 0"
                                             :size="'sm'" 
-                                            variant="secondary" 
+                                            variant="success" 
                                             data-toggle="tooltip" 
-                                            :title="'Show'"
-                                            @click="$refs.showentry.setVisible(data.item.news_id,true)">
-                                            <i class="fa fa-eye-slash"></i>
-                                            {{ data.is_show }}
+                                            :title="'Activate'"
+                                            @click="$refs.showentry.setVisible(data,data.item.news_id,1,'activate','News and Publication')">
+                                            <i class="fa fa-eye"></i>
                                         </b-btn>
 
                                         <b-btn v-if="checkRights('6-23')" 
@@ -206,15 +210,8 @@ export default {
             },
             forms: {
                 newspublication : {
-                    isSaving: false,
                     fields: {
-                        news_id: null,
-                        news_title: null,
-                        news_description: null,
-                        news_publish_date: null,
-                        gallery_file_path: null,
-                        gallery_file_paths: null,
-                        id: null
+                        status_id: 'all'
                     }
                 }
             },
@@ -233,6 +230,11 @@ export default {
             row: []
         }
     },
+    methods:{
+        filterStatusList(){
+            this.cmsfilterTableList('newspublications', this.forms.newspublication.fields.status_id);
+        }
+    },
     computed: {
         checkAction(){
             if(this.$store.state.rights.length > 0){
@@ -244,7 +246,7 @@ export default {
         }
     },
     created () {
-        this.fillTableList('newspublications');
+        this.cmsfilterTableList('newspublications', this.forms.newspublication.fields.status_id)
     },
   }
 </script>

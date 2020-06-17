@@ -21,16 +21,22 @@ class NewsPublicationsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($status_id = 'all')
     {
         $newspublication = NewsPublication::select('*',
                     DB::raw('CONCAT_WS("",user.user_lname,", ",user.user_fname,user.user_mname) as publisher'),
                     DB::raw('DATE_FORMAT(news_publish_date, "%M %d, %Y") as news_publish_date'))
                     ->leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
                     ->leftJoin('user_accounts as user', 'user.user_id', '=', 'cms_newspublication.created_by')
-                    ->where('cms_newspublication.is_deleted', 0)->orderBy('cms_newspublication.news_id', 'desc')->get();
+                    ->where('cms_newspublication.is_deleted', 0);
 
-        return Reference::collection($newspublication);
+                    if($status_id != 'all'){
+                        $newspublication->where('cms_newspublication.is_show', $status_id);
+                    }
+
+                    $newspublication->orderBy('cms_newspublication.news_id', 'desc');
+
+        return Reference::collection($newspublication->get());
     }
 
     /**
@@ -204,7 +210,26 @@ class NewsPublicationsController extends Controller
             ->setStatusCode(200);
     }
 
+    public function activate($type,$id)
+    {   
+        $status = NewsPublication::findOrFail($id);
+        $status->is_show = intval($type);
 
+        //update classification based on the http json body that is sent
+        $status->save();
+        
+        $data = NewsPublication::select('*',
+                    DB::raw('CONCAT_WS("",user.user_lname,", ",user.user_fname,user.user_mname) as publisher'),
+                    DB::raw('DATE_FORMAT(news_publish_date, "%M %d, %Y") as news_publish_date'))
+                    ->leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
+                    ->leftJoin('user_accounts as user', 'user.user_id', '=', 'cms_newspublication.created_by')
+                    ->findOrFail($id);
+
+
+        return ( new Reference( $data ) )
+            ->response()
+            ->setStatusCode(200);
+    }
     /**
      * Remove the specified resource from storage.
      *

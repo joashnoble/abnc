@@ -92,18 +92,20 @@ Route::middleware('auth:api')->group(function () {
    Route::get('servicegrouptypecheck/{id}', 'References\ServiceGroupTypeController@checkIfUsed');
 
     // List News Publication
-    Route::get('newspublications', 'ContentManagement\NewsPublicationsController@index');
+    Route::get('newspublications/{status_id}', 'ContentManagement\NewsPublicationsController@index');
     Route::get('newspublication/{id}', 'ContentManagement\NewsPublicationsController@show');
     Route::post('newspublication', 'ContentManagement\NewsPublicationsController@create');
     Route::put('newspublication/{id}', 'ContentManagement\NewsPublicationsController@update');
     Route::put('newspublication/delete/{id}', 'ContentManagement\NewsPublicationsController@delete');   
+    Route::put('activate/newspublication/{type}/{id}', 'ContentManagement\NewsPublicationsController@activate'); 
 
     // List Seminars
-    Route::get('seminars', 'ContentManagement\SeminarsController@index');
+    Route::get('seminars/{status_id}', 'ContentManagement\SeminarsController@index');
     Route::get('seminar/{id}', 'ContentManagement\SeminarsController@show');
     Route::post('seminar', 'ContentManagement\SeminarsController@create');
     Route::put('seminar/{id}', 'ContentManagement\SeminarsController@update');
     Route::put('seminar/delete/{id}', 'ContentManagement\SeminarsController@delete');   
+    Route::put('activate/seminar/{type}/{id}', 'ContentManagement\SeminarsController@activate'); 
     
     // List CSR
     Route::get('csrs', 'ContentManagement\CSRController@index');

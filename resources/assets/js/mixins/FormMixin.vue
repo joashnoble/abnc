@@ -383,7 +383,6 @@
             })
         },
 
-
         //archive entity from a modal component
         archiveEntityRef (entity, entity_id, isModal, entity_table, primary_key, refs, entity_type, type) {
           // this.$refs[refs].forms[entity].isSaving = true
@@ -411,6 +410,44 @@
 
               if(isModal){
                 this.$refs[refs].showModalArchive = false
+              }
+              
+            }).catch(error => {
+              // this.$refs[refs].forms[entity].isSaving = false
+              if (!error.response) return
+              const errors = error.response.data.errors
+              console.log(errors)
+            })
+        },
+
+        //archive entity from a modal component
+        activateEntityRef (entity, entity_id, isModal, entity_table, primary_key, refs, entity_type, type, row) {
+          // this.$refs[refs].forms[entity].isSaving = true
+          this.$refs[refs].isSaving = true  
+          
+          this.$http.put('api/activate/' + entity + '/' + entity_type + '/' + entity_id, entity_id,{
+              headers: {
+                      Authorization: 'Bearer ' + localStorage.getItem('token')
+                  }
+            })
+            .then((response) => {
+              // this.$refs[refs].forms[entity].isSaving = false
+              this.$refs[refs].isSaving = false
+              this.$notify({
+                type: 'success',
+                group: 'notification',
+                title: 'Success!',
+                text: 'The record has been ' + type + '.'
+              })
+
+              const index = this.tables[entity_table].items.findIndex(item => item[primary_key] === response.data.data[primary_key])
+
+              for (var key in response.data.data) {
+                row[key] = response.data.data[key]
+              }
+
+              if(isModal){
+                this.$refs[refs].showModalVisible = false
               }
               
             }).catch(error => {
@@ -474,6 +511,27 @@
               console.log(error)
             })
         },
+
+        //fill table with filter
+        cmsfilterTableList (entity, filter1) {
+          this.$http.get('/api/' + entity + '/' + filter1 ,{
+              headers: {
+                      Authorization: 'Bearer ' + localStorage.getItem('token')
+                  }
+            })
+            .then((response) => {
+              const records = response.data
+              this.tables[entity].items = records.data
+              this.paginations[entity].totalRows = records.data.length
+              // ### commented for future server side pagination
+              // this.paginations[entity].totalRows = records.meta.total
+              // this.paginations[entity].currentPage = records.meta.current_page
+              // this.paginations[entity].perPage = records.meta.per_page
+            }).catch(error => {
+              if (!error.response) return
+              console.log(error)
+            })
+        },        
 
         fillTableList (entity) {
           this.$http.get('/api/' + entity,{

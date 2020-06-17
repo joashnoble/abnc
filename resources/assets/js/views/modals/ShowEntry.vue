@@ -6,10 +6,10 @@
             :noCloseOnBackdrop="true"
         >
             <div slot="modal-title">
-                <i class="{{ icon }}" style="color: red;"></i> {{capitalize(type)}} {{capitalize(entity)}}
+                <i :class="icon"></i> {{capitalize(content)}}
             </div>
             <b-col lg=12>
-                Are you sure you want to {{type.toLowerCase()}} this {{entity.toLowerCase()}}?
+                Are you sure you want to {{type}} this {{content}}?
             </b-col>
             <div slot="modal-footer">
                 <b-button :disabled="isSaving" variant="success" @click="onVisibleEntry">
@@ -31,17 +31,25 @@ export default {
             showModalVisible: false,
             isSaving: false,
             ref_id: null,
-            icon: null
+            icon: null,
+            type: null,
+            content: null,
+            active: null,
+            row: [],
         }
     },
     methods: {
         onVisibleEntry(){
-            this.$parent.archiveEntityRef(this.entity.split(" ").join("").toLowerCase(), this.ref_id, true, this.table, this.primary_key, 'archiveentry', this.is_active, this.type)
+            this.$parent.activateEntityRef(this.entity.split(" ").join("").toLowerCase(), this.ref_id, true, this.table, this.primary_key, 'showentry', this.status, this.type, this.row)
         },
-        setVisible(id,status){
+        setVisible(data,id,status,type,content){
             this.ref_id = id
             this.status = status
-            if(status == true){
+            this.type = type
+            this.content = content
+            this.row = data.item
+
+            if(status == 1){
                 this.icon = "fa fa-eye"
             }else{
                 this.icon = "fa fa-eye-slash"
