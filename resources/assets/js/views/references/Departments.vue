@@ -43,6 +43,7 @@
                                     :items.sync="tables.departments.items"
                                     :current-page="paginations.departments.currentPage"
                                     :per-page="paginations.departments.perPage"
+                                    :busy="tables.departments.isBusy"
                                     @filtered="onFiltered($event,'departments')"
                                     hover  small show-empty
                                 > <!-- table -->
@@ -54,6 +55,13 @@
                                     <b-btn v-if="checkRights('1-4')" :size="'sm'" variant="danger" @click="$refs.deleteentry.setDelete(data.item.department_id)">
                                         <i class="fa fa-trash"></i>
                                     </b-btn>
+                                </template>
+
+                                <template v-slot:table-busy>
+                                  <div class="text-center text-primary my-2">
+                                    <b-spinner variant="primary" class="align-middle"></b-spinner>
+                                    <strong> Loading...</strong>
+                                  </div>
                                 </template>
 
                                 </b-table> <!-- table -->
@@ -92,6 +100,7 @@ export default {
         showModalDelete: false,
         tables: {
           departments: {
+                isBusy: false,
                 fields: [
                 {
                     key: 'department_code',

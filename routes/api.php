@@ -97,7 +97,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('newspublication', 'ContentManagement\NewsPublicationsController@create');
     Route::put('newspublication/{id}', 'ContentManagement\NewsPublicationsController@update');
     Route::put('newspublication/delete/{id}', 'ContentManagement\NewsPublicationsController@delete');   
-    Route::put('activate/newspublication/{type}/{id}', 'ContentManagement\NewsPublicationsController@activate'); 
+    Route::put('activate/newspublication/{type}/{id}', 'ContentManagement\NewsPublicationsController@activate');
+    Route::get('newspublications/archive/{type}', 'ContentManagement\NewsPublicationsController@archives'); 
 
     // List Seminars
     Route::get('seminars/{status_id}', 'ContentManagement\SeminarsController@index');

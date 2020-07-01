@@ -114,8 +114,15 @@ export default {
           url: '/archives/services',
           rights: '6-21',
           icon: 'icon-list'
-        },                                   
+        },
+        {
+          name: 'News And Publications',
+          url: '/archives/NewsPublication',
+          rights: '6-21',
+          icon: 'icon-list'
+        },                          
       ]
+
     },
     // {
     //   name: 'Transactions',

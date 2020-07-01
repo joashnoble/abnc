@@ -51,6 +51,7 @@ import carousels from '@/views/cms/Carousels'
 
 //Views - Archive Management
 import archiveservices from '@/views/archives/services'
+import ArchiveNewsPublication from '@/views/archives/NewsPublication'
 
 //Views - Utilities
 import users from '@/views/utilities/Users'
@@ -214,6 +215,12 @@ const router = new Router({
               path: 'services',
               name: 'Services',
               component: archiveservices,
+              meta: {requiresAuth: true, rights: '1-1'}
+            },
+            {
+              path: 'NewsPublication',
+              name: 'Archive News Publication',
+              component: ArchiveNewsPublication,
               meta: {requiresAuth: true, rights: '1-1'}
             }
           ]

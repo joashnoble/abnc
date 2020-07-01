@@ -39,6 +39,20 @@ class NewsPublicationsController extends Controller
         return Reference::collection($newspublication->get());
     }
 
+    public function archives($type)
+    {
+        $newspublication = NewsPublication::select('*',
+                    DB::raw('CONCAT_WS("",user.user_lname,", ",user.user_fname,user.user_mname) as publisher'),
+                    DB::raw('DATE_FORMAT(news_publish_date, "%M %d, %Y") as news_publish_date'))
+                    ->leftJoin('cms_gallery', 'cms_gallery.gallery_id', '=', 'cms_newspublication.gallery_id')
+                    ->leftJoin('user_accounts as user', 'user.user_id', '=', 'cms_newspublication.created_by')
+                    ->where('cms_newspublication.is_deleted', 0)
+                    ->where('cms_newspublication.is_active', $type)
+                    ->orderBy('cms_newspublication.news_id', 'desc');
+
+        return Reference::collection($newspublication->get());
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -241,16 +255,18 @@ class NewsPublicationsController extends Controller
         //
     }
 
-    public function checkIfUsed($id)
+    public function archive($type)
     {
-        $exists = 'false';
+        $archive = NewsPublication::findOrFail($id);
+        $archive->is_active = $type;
+        $archive->archived_datetime = Carbon::now();
+        $archive->archived_by = Auth::user()->id;
 
-        if(ContractInfo::where('category_id', '=', $id)
-            ->where('is_deleted', 0)
-            ->exists()) {
-            $exists = 'true';
-        }
-        
-        return $exists;
+        //update classification based on the http json body that is sent
+        $archive->save();
+
+        return ( new Reference( $archive ) )
+            ->response()
+            ->setStatusCode(200);
     }
 }

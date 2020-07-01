@@ -25,33 +25,54 @@
 <script>
 export default {
     name: 'archiveentry',
-    props: ['type','entity','primary_key','table'],
+     props: {
+      entity: {
+        type: String
+      },
+      primary_key: {
+        type: String
+      },
+      table: {
+        type: String
+      },
+      type: {
+        type: String
+      },
+      check_for_foreign_key: {
+        //check if needed to check relationship to other tables
+        type: Boolean,
+        default: true 
+      }
+    },
     data() {
-        return {
-            showModalArchive: false,
-            isSaving: false,
-            ref_id: null,
-            is_active: null
-        }
+      return {
+        showModalArchive: false,
+        isSaving: false,
+        ref_id: null,
+        is_active: null
+      }
     },
     methods: {
-        onArchiveEntry(){
-            this.$parent.archiveEntityRef(this.entity.split(" ").join("").toLowerCase(), this.ref_id, true, this.table, this.primary_key, 'archiveentry', this.is_active, this.type)
-        },
-        async setArchive(id,active){
-            if(await this.checkIfUsed(this.entity.split(" ").join("").toLowerCase(), id) == true){
-                this.$notify({
-                    type: 'error',
-                    group: 'notification',
-                    title: 'Error!',
-                    text: "Unable to archive, this record is being used by other transactions."
-                })
-                return
-            }
-            this.ref_id = id
-            this.is_active = active
-            this.showModalArchive = true
-        },
+      onArchiveEntry(){
+        this.$parent.archiveEntityRef(this.entity.split(" ").join("").toLowerCase(), this.ref_id, true, this.table, this.primary_key, 'archiveentry', this.is_active, this.type)
+      },
+      async setArchive(id,active){
+        if (this.check_for_foreign_key) {
+          if(await this.checkIfUsed(this.entity.split(" ").join("").toLowerCase(), id) == true){
+            this.$notify({
+              type: 'error',
+              group: 'notification',
+              title: 'Error!',
+              text: "Unable to archive, this record is being used by other transactions."
+            })
+            return
+          }
+        }
+        
+        this.ref_id = id
+        this.is_active = active
+        this.showModalArchive = true
+      },
     }
 }
 </script>

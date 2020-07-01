@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Management;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Management\Service;
+use App\Models\ContentManagement\NewsPublication;
 use App\Models\Management\ServiceItems;
 use App\Models\Management\Clients;
 use App\Models\Transactions\ContractInfo;
@@ -25,9 +26,13 @@ class ArchivesController extends Controller
 
     public function archive($entity,$type,$id)
     {   
+
         if ($entity == "service"){
             $archive = Service::findOrFail($id);
+        } else if ($entity == "newspublication") {
+            $archive = NewsPublication::findOrFail($id);
         }
+
 
         $archive->is_active = intval($type);
         $archive->archived_datetime = Carbon::now();

@@ -358,6 +358,7 @@
             })
             .then((response) => {
               // this.$refs[refs].forms[entity].isSaving = false
+              
               this.$refs[refs].isSaving = false
               this.$notify({
                 type: 'success',
@@ -369,9 +370,10 @@
               const index = this.tables[entity_table].items.findIndex(item => item[primary_key] === response.data.data[primary_key])
 
               this.$delete(this.tables[entity_table].items, index)
+
               this.paginations[entity_table].totalRows--
 
-              if(isModal){
+              if (isModal) {
                 this.$refs[refs].showModalDelete = false
               }
               
@@ -534,6 +536,7 @@
         },        
 
         fillTableList (entity) {
+          this.tables[entity].isBusy = true
           this.$http.get('/api/' + entity,{
               headers: {
                       Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -547,9 +550,11 @@
               // this.paginations[entity].totalRows = records.meta.total
               // this.paginations[entity].currentPage = records.meta.current_page
               // this.paginations[entity].perPage = records.meta.per_page
+              this.tables[entity].isBusy = false
             }).catch(error => {
               if (!error.response) return
               console.log(error)
+              this.tables[entity].isBusy = false
             })
         },
 
